@@ -1,48 +1,650 @@
 <!DOCTYPE html>
-<html lang="en">
+<html dir="rtl" lang="ur">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PaySlip</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مOnline PaySlip</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
   <style>
-    /* Browser ki default settings ko reset karne ke liye */
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      overflow: hidden; /* Screen se bahar scroll na ho */
-      background-color: #000; /* Loading ke waqt background color */
+    body, .urdu-text {
+      font-family: 'Noto Nastaliq Urdu', 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 2.2;
+    }
+    
+    .ltr-input {
+      direction: ltr !important;
+      text-align: left !important;
+      font-family: 'Inter', sans-serif !important;
     }
 
-    iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
+    .payslip-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 24px;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      height: auto !important;
+      overflow: visible !important;
     }
+
+    .transition-all-custom {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ===== Official Payslip Layout ===== */
+    .official-slip {
+      direction: ltr;
+      text-align: left;
+      font-family: 'Times New Roman', 'Noto Nastaliq Urdu', serif;
+      color: #000000;
+      font-size: 12.5px;
+      width: 100%;
+    }
+    .official-slip .slip-header {
+      text-align: center;
+      border-bottom: 2px solid #000;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+    .official-slip .slip-title { font-weight: 700; font-size: 15px; }
+    .official-slip .slip-subtitle { font-weight: 700; font-size: 13px; }
+    .official-slip .slip-month { font-weight: 700; font-size: 13px; margin-top: 2px; }
+
+    .official-slip .slip-section-title {
+      font-weight: 700;
+      margin: 10px 0 4px;
+      font-size: 12.5px;
+    }
+
+    .official-slip table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 4px;
+    }
+    .official-slip .slip-info-table td {
+      padding: 2px 6px;
+      vertical-align: top;
+    }
+    .official-slip .slip-info-table .lbl {
+      font-weight: 400;
+      white-space: nowrap;
+      color: #333;
+    }
+
+    .official-slip .slip-pay-table,
+    .official-slip .slip-loan-table {
+      border: 1px solid #000;
+    }
+    .official-slip .slip-pay-table th,
+    .official-slip .slip-loan-table th {
+      border: 1px solid #000;
+      background: #f1f5f9;
+      font-weight: 700;
+      padding: 4px 6px;
+      text-align: left;
+    }
+    .official-slip .slip-pay-table td,
+    .official-slip .slip-loan-table td {
+      border: 1px solid #000;
+      padding: 3px 6px;
+    }
+    .official-slip .ps-code { width: 8%; }
+    .official-slip .ps-label { width: 34%; }
+    .official-slip .ps-amount, .official-slip .slip-info-table .ps-amount { text-align: right; white-space: nowrap; }
+
+    .official-slip .slip-summary-table {
+      border: 2px solid #000;
+      margin: 8px 0;
+    }
+    .official-slip .slip-summary-table td {
+      padding: 6px;
+      font-size: 13px;
+    }
+
+    .official-slip .slip-footer {
+      margin-top: 14px;
+      padding-top: 6px;
+      border-top: 1px solid #999;
+      font-size: 10px;
+      font-style: italic;
+      color: #444;
+    }
+    .official-slip .slip-footer p { margin: 1px 0; }
   </style>
 </head>
-<body>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between text-slate-800">
 
-  <iframe 
-    src="https://script.google.com/macros/s/AKfycbwCsuhGCUK5udkwRy-s6nxTVbAupICjOOm2KL9KdTEaEFx-9UaR8eqrG4s681yuOXk-6g/exec"
-    allowfullscreen="true">
-  </iframe>
+  <header class="bg-gradient-to-r from-emerald-700 via-teal-700 to-cyan-800 text-white shadow-lg border-b border-teal-600">
+    <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
+          <i class="fa-solid fa-file-invoice-dollar text-3xl text-emerald-300"></i>
+        </div>
+        <div>
+          <h1 class="text-1xl sm:text-3xl font-bold urdu-text tracking-wide">پے سلپ آن لائن پورٹل</h1>
+          <p class="text-xs sm:text-sm text-teal-100 opacity-90 mt-1">ڈیجیٹل سروسز برائے سرکاری ملازمین</p>
+        </div>
+      </div>
+      <div class="text-right sm:text-left text-xs text-emerald-100 opacity-75">
+        <div class="ltr-input"><i class="fa-regular fa-calendar-days ml-1"></i> <span id="currentDate"></span></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8">
+    
+    <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-6 sm:p-8 mb-8 relative overflow-hidden">
+      <div class="absolute -right-16 -top-16 w-36 h-36 bg-teal-50 rounded-full -z-10"></div>
+      <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-emerald-50 rounded-full -z-10"></div>
+
+      <h2 class="text-xl sm:text-2xl font-bold text-teal-900 mb-4 urdu-text">نوٹ: یہ صرف ضلع بنوں کے لیے ہے۔اپنا پے سلپ تلاش کریں</h2>
+      <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+        اپنی مطلوبہ پے سلپ تلاش کرنے کے لیے نیچے دیے گئے فارم سے متعلقہ ضلع، مہینہ، سال کا انتخاب کریں اور بغیر ڈیش کے نمبر درج کریں۔
+      </p>
+
+      <form id="searchForm" class="space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          
+          <div class="flex flex-col">
+            <label for="categorySelector" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
+              <i class="fa-solid fa-layer-group text-teal-600 ml-2"></i> کیٹیگری:
+            </label>
+            <div class="relative">
+              <select id="categorySelector" required class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom appearance-none cursor-pointer text-sm">
+                <option value="District">District</option>
+                <option value="Federal">Federal</option>
+                <option value="Provincial">Provincial</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                <i class="fa-solid fa-chevron-down text-xs"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="monthSelector" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
+              <i class="fa-solid fa-calendar-minus text-teal-600 ml-2"></i>مہینہ منتخب کریں:
+            </label>
+            <div class="relative">
+              <select id="monthSelector" required class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom appearance-none cursor-pointer text-sm">
+                <option value="May">May</option>
+                <option value="Jun">Jun</option>
+                <option value="Jul">Jul</option>
+                <option value="Aug">Aug</option>
+                <option value="Sep">Sep</option>
+                <option value="Oct">Oct</option>
+                <option value="Nov">Nov</option>
+                <option value="Dec">Dec</option>
+                <option value="Jan">Jan</option>
+                <option value="Feb">Feb</option>
+                <option value="Mar">Mar</option>
+                <option value="Apr">Apr</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                <i class="fa-solid fa-chevron-down text-xs"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="yearSelector" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
+              <i class="fa-solid fa-calendar-days text-teal-600 ml-2"></i>سال منتخب کریں:
+            </label>
+            <div class="relative">
+              <select id="yearSelector" required class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom appearance-none cursor-pointer text-sm">
+                <option value="2026" selected>2026</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                <i class="fa-solid fa-chevron-down text-xs"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="searchQuery" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
+              <i class="fa-solid fa-address-card text-teal-600 ml-2"></i>شناختی کارڈ نمبر درج کریں:
+            </label>
+            <div class="relative">
+              <input type="text" id="searchQuery" required placeholder="نمبر درج کریں..." class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom text-sm placeholder-slate-400">
+              <div class="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                <i class="fa-solid fa-fingerprint text-xs"></i>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
+          <button type="button" id="resetBtn" class="w-full sm:w-auto px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl font-bold urdu-text text-sm transition-all-custom flex items-center justify-center gap-2">
+            <i class="fa-solid fa-rotate-right text-xs"></i> صاف کریں
+          </button>
+          <button type="submit" id="searchBtn" class="w-full sm:w-64 px-6 py-3.5 bg-teal-600 hover:bg-teal-700 text-white rounded-2xl font-bold urdu-text text-sm shadow-md shadow-teal-600/20 transition-all-custom flex items-center justify-center gap-2">
+            <i class="fa-solid fa-magnifying-glass"></i> تلاش کریں
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 relative overflow-hidden shadow-sm">
+      <div class="absolute -right-10 -bottom-10 w-28 h-28 bg-green-200/30 rounded-full -z-10"></div>
+      <div class="flex gap-4 items-start w-full sm:w-auto">
+        <div class="bg-green-500 text-white p-3 rounded-xl shadow-md shadow-green-500/20 shrink-0 animate-pulse">
+          <i class="fa-brands fa-whatsapp text-2xl"></i>
+        </div>
+        <div>
+          <h4 id="bannerHeading" class="font-bold text-green-900 urdu-text text-base mb-1">اہم اپڈیٹ: ہمارا واٹس ایپ چینل جوائن کریں!</h4>
+          <p id="bannerText" class="text-xs sm:text-sm text-slate-600 leading-relaxed">خیبر ایلیمنٹری اینڈ سیکنڈری ایجوکیشن کی تازہ ترین خبروں، نوٹیفیکیشنز اور تبادلوں کی اپڈیٹس کے لیے ابھی ہمارا آفیشل واٹس ایپ چینل جوائن کریں۔</p>
+        </div>
+      </div>
+      <a id="bannerLink" href="https://whatsapp.com/channel/0029VaCK4y0EquiKbkl09S1A" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto text-center bg-green-600 hover:bg-green-700 text-white font-bold urdu-text text-sm px-6 py-3.5 rounded-2xl shadow-lg shadow-green-600/20 transition-all-custom flex items-center justify-center gap-2 whitespace-nowrap">
+        <i class="fa-solid fa-bell text-xs"></i> چینل جوائن کریں
+      </a>
+    </div>
+
+    <div class="bg-teal-50/50 rounded-2xl border border-teal-100 p-5 flex gap-4 items-start mb-6">
+      <div class="text-teal-600 mt-1">
+        <i class="fa-solid fa-shield-halved text-xl"></i>
+      </div>
+      <div class="text-xs sm:text-sm text-slate-600">
+        <h4 class="font-bold text-teal-900 urdu-text mb-1 text-sm">حفاظتی ہدایات</h4>
+        <p class="leading-relaxed">یہ پورٹل ڈیٹا بیس کی تلاش کے لیے محفوظ ترین اصولوں کا استعمال کرتا ہے۔ کسی بھی تکنیکی یا ملازم کے ڈیٹا میں غلطی کی صورت میں اپنے ڈسٹرکٹ آفس/اکاؤنٹس برانچ سے فوری رابطہ کریں۔</p>
+      </div>
+    </div>
+
+    <div class="relative mx-auto mt-4 sm:fixed sm:bottom-6 sm:left-6 sm:mx-0 sm:mt-0 z-40 bg-white border border-slate-200/80 shadow-lg sm:shadow-2xl rounded-2xl p-4 max-w-full sm:w-64 flex flex-col gap-2 transition-all duration-500 hover:scale-105 border-r-4 border-r-teal-600" id="onlineCounterWidget">
+      <div class="flex items-center gap-3 border-b border-slate-100 pb-2">
+        <div class="relative flex h-8 w-8 items-center justify-center shrink-0">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-20"></span>
+          <span class="animate-pulse absolute inline-flex h-6 w-6 rounded-full bg-teal-50"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-teal-600"></span>
+        </div>
+        <div class="text-left" style="direction: ltr !important; text-align: left !important; font-family: 'Inter', sans-serif;">
+          <p class="text-xs font-semibold text-slate-700 leading-none">
+            <span id="onlineCount" class="text-teal-600 font-bold text-sm tracking-wide">1</span> Employee(s) Online
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 pt-0.5">
+        <div class="bg-slate-100 h-8 w-8 rounded-full flex items-center justify-center text-slate-500 shrink-0">
+          <i class="fa-solid fa-users text-xs"></i>
+        </div>
+        <div class="text-left" style="direction: ltr !important; text-align: left !important; font-family: 'Inter', sans-serif;">
+          <p class="text-xs font-semibold text-slate-600 leading-none">
+            Total Visits: <span id="totalVisitorCount" class="text-slate-900 font-bold text-sm tracking-wide">0</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex flex-col items-center justify-center text-white hidden">
+    <div class="relative flex items-center justify-center">
+      <div class="animate-spin rounded-full h-20 w-20 border-4 border-teal-500 border-t-transparent"></div>
+      <i class="fa-solid fa-circle-notch animate-ping text-xl text-teal-300 absolute"></i>
+    </div>
+    <p id="loadingMessage" class="mt-6 font-bold text-lg urdu-text tracking-wide text-teal-100 animate-pulse">براہ کرم انتظار کریں...</p>
+  </div>
+
+  <div id="payslipModal" class="fixed inset-0 z-40 overflow-y-auto hidden">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
+    <div class="flex min-h-screen items-center justify-center p-4">
+      <div class="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden transform transition-all border border-slate-200">
+        
+        <div class="bg-slate-100 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-teal-500 text-white text-xs">
+              <i class="fa-solid fa-check"></i>
+            </span>
+            <h3 class="font-bold text-slate-800 urdu-text text-base sm:text-lg">پے سلپ کامیابی سے مل گئی ہے</h3>
+          </div>
+          <button type="button" onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+        </div>
+
+        <div id="payslipScroll" class="p-6 overflow-x-auto max-h-[70vh]" style="direction:ltr;">
+          <div id="payslipBody" class="payslip-container p-6 border border-slate-300 rounded shadow-sm bg-white min-w-[700px]">
+          </div>
+        </div>
+
+        <div class="bg-slate-50 border-t border-slate-100 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span class="text-xs text-slate-500 font-medium">
+            <i class="fa-solid fa-circle-info ml-1 text-slate-400"></i>
+            محفوظ پی ڈی ایف پرنٹ یا ڈاؤن لوڈ کرنے کے لیے بٹن دبائیں۔
+          </span>
+          <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <button type="button" onclick="closeModal()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-xs sm:text-sm urdu-text transition-colors w-full sm:w-auto">
+              بند کریں
+            </button>
+            <button type="button" id="downloadPdfBtn" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs sm:text-sm urdu-text shadow-md shadow-emerald-600/10 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
+              <i class="fa-solid fa-file-pdf"></i> ڈاؤن لوڈ PDF
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="whatsappPopupModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
+    <div class="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity" onclick="closeWhatsappPopup()"></div>
+    <div class="flex min-h-screen items-center justify-center p-4">
+      <div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6 text-center animate-bounce-short">
+        <div class="bg-green-500 text-white p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg shadow-green-500/30">
+          <i class="fa-brands fa-whatsapp text-3xl"></i>
+        </div>
+        <h3 id="popupHeading" class="font-bold text-slate-900 urdu-text text-lg mb-2">اہم اپڈیٹ: ہمارا واٹس ایپ چینل جوائن کریں!</h3>
+        <p id="popupText" class="text-sm text-slate-600 urdu-text leading-relaxed mb-6">خیبر ایلیمنٹری اینڈ سیکنڈری ایجوکیشن کی تازہ ترین خبروں کے لیے ابھی ہمارا آفیشل واٹس ایپ چینل جوائن کریں۔</p>
+        <div class="flex flex-col gap-2">
+          <a id="popupLink" href="https://whatsapp.com/channel/0029VaCK4y0EquiKbkl09S1A" target="_blank" rel="noopener noreferrer" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold urdu-text text-sm py-3.5 rounded-2xl shadow-lg shadow-green-600/20 transition-all-custom flex items-center justify-center gap-2">
+            <i class="fa-solid fa-bell text-xs"></i> ابھی جوائن کریں
+          </a>
+          <button type="button" onclick="closeWhatsappPopup()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-bold urdu-text text-sm transition-colors">
+            بعد میں کریں گے
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-slate-950 text-slate-500 py-6 border-t border-slate-900 mt-12 text-center text-xs">
+    <p class="urdu-text mb-2">محفوظ ڈیجیٹل سروسز - پے سلپ systeem © 2026</p>
+    <p class="text-[11px] opacity-70 tracking-wide font-sans" style="direction: ltr !important; text-align: center !important;">
+      © 2026 Babar Ali. All Rights Reserved | System v3.2
+    </p>
+  </footer>
 
   <script>
-    window.onload = function() {
-      const iframe = document.querySelector('iframe');
+    // ===== APNA GOOGLE APPS SCRIPT WEB APP URL YAHAN DALEIN =====
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCsuhGCUK5udkwRy-s6nxTVbAupICjOOm2KL9KdTEaEFx-9UaR8eqrG4s681yuOXk-6g/exec";
+
+    const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', dateOpts);
+
+    let myLiveUserId = sessionStorage.getItem('paySlipCounterUserId') || "";
+    let globalPopupStatus = "Show";
+    let globalPopupHeading = "";
+    let globalPopupText = "";
+    let globalPopupLink = "";
+
+    function fetchRealLiveTraffic() {
+      const url = `${WEB_APP_URL}?action=traffic&userId=${myLiveUserId}`;
+      fetch(url)
+        .then(res => res.json())
+        .then(res => {
+          if (res && res.success) {
+            if (!myLiveUserId && res.userId) {
+              myLiveUserId = res.userId;
+              sessionStorage.setItem('paySlipCounterUserId', res.userId);
+            }
+            document.getElementById('onlineCount').innerText = res.liveCount;
+            document.getElementById('totalVisitorCount').innerText = res.totalCount.toLocaleString();
+          }
+        })
+        .catch(err => console.error("Counter sync failed: ", err));
+    }
+
+    function fetchWhatsAppBannerDetails() {
+      const url = `${WEB_APP_URL}?action=banner`;
+      fetch(url)
+        .then(res => res.json())
+        .then(res => {
+          if (res && res.success) {
+            if (res.bannerHeading) document.getElementById('bannerHeading').innerText = res.bannerHeading;
+            if (res.bannerText) document.getElementById('bannerText').innerText = res.bannerText;
+            if (res.bannerLink) document.getElementById('bannerLink').href = res.bannerLink;
+            
+            globalPopupStatus = res.popupStatus ? res.popupStatus.trim().toLowerCase() : "show";
+            globalPopupHeading = res.popupHeading || document.getElementById('bannerHeading').innerText;
+            globalPopupText = res.popupText || document.getElementById('bannerText').innerText;
+            globalPopupLink = res.popupLink || document.getElementById('bannerLink').href;
+          }
+        })
+        .catch(err => console.error("Failed to load WhatsApp data: ", err));
+    }
+
+    // Run traffic counter on initialization
+    if(WEB_APP_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+      fetchRealLiveTraffic();
+      fetchWhatsAppBannerDetails();
+      setInterval(fetchRealLiveTraffic, 15000);
+    }
+
+    function showLoading(msg) {
+      const loader = document.getElementById('loadingOverlay');
+      const text = document.getElementById('loadingMessage');
+      if (text && msg) text.innerText = msg;
+      loader.classList.remove('hidden');
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+    }
+
+    // Main Fetch submission handler replacing old Iframe submission
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+      e.preventDefault();
       
-      // Fullscreen request (Note: Aksar browsers user click ke bagair isse allow nahi karte)
-      if (iframe.requestFullscreen) {
-        iframe.requestFullscreen().catch((err) => {
-          console.warn('Auto-fullscreen blocked. This is normal behavior for most browsers.');
-        });
+      const category = document.getElementById('categorySelector').value;
+      const month = document.getElementById('monthSelector').value;
+      const year = document.getElementById('yearSelector').value;
+      const queryInput = document.getElementById('searchQuery').value;
+      const cleanQuery = queryInput.replace(/[-\s]/g, "");
+      
+      if (!category || !month || !year || !cleanQuery) {
+        showNotification("براہ کرم تمام معلومات درست طریقے سے درج کریں!", "warning");
+        return;
       }
-    };
+      
+      showLoading("پے سلپ تلاش کی جا رہی ہے، براہ کرم انتظار کریں...");
+      
+      const targetUrl = `${WEB_APP_URL}?action=search&category=${category}&month=${month}&year=${year}&query=${cleanQuery}`;
+      
+      fetch(targetUrl)
+        .then(response => response.json())
+        .then(handleSearchResult)
+        .catch(err => {
+          hideLoading();
+          showNotification("تکنیکی خرابی: " + err.message, "error");
+        });
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', function() {
+      document.getElementById('searchForm').reset();
+      showNotification("فارم صاف کر دیا گیا ہے", "info");
+    });
+
+    function fmtAmount(val) {
+      if (val === undefined || val === null || val === "") return "";
+      const num = Number(val.toString().replace(/,/g, ""));
+      if (isNaN(num)) return val;
+      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Updated buildPairedRows helper to match correct design output structures
+    function buildPairedRows(items) {
+      let rows = "";
+      for (let i = 0; i < items.length; i += 2) {
+        const left = items[i];
+        const right = items[i + 1];
+        rows += `<tr>
+          <td class="ps-code">${left ? left.code : ""}</td>
+          <td class="ps-label">${left ? left.label : ""}</td>
+          <td class="ps-amount">${left ? fmtAmount(left.amount) : ""}</td>
+          <td class="ps-code">${right ? right.code : ""}</td>
+          <td class="ps-label">${right ? right.label : ""}</td>
+          <td class="ps-amount">${right ? fmtAmount(right.amount) : ""}</td>
+        </tr>`;
+      }
+      return rows;
+    }
+
+    function generatePayslipHTML(data) {
+      const d = data || {};
+      const payRows = buildPairedRows(d.payItems || []);
+      const dedRows = buildPairedRows(d.deductions || []);
+
+      let loanRows = "";
+      (d.loans || []).forEach(l => {
+        loanRows += `<tr>
+          <td>${l.loanNo || ""}</td>
+          <td>${l.description || ""}</td>
+          <td class="ps-amount">${fmtAmount(l.principal)}</td>
+          <td class="ps-amount">${fmtAmount(l.deduction)}</td>
+          <td class="ps-amount">${fmtAmount(l.balance)}</td>
+        </tr>`;
+      });
+
+      return `
+      <div class="official-slip">
+        <div class="slip-header">
+          <div class="slip-title">${d.officeTitle || ""}</div>
+          <div class="slip-subtitle">${d.officeSubTitle || ""}</div>
+          <div class="slip-month">Monthly Salary Statement (${d.monthYear || ""})</div>
+        </div>
+        <div class="slip-section-title">Personal Information of ${d.name || ""}${d.guardianName ? " " + (d.guardianRelation || "d/w/s of") + " " + d.guardianName : ""}</div>
+        <table class="slip-info-table">
+          <tr><td class="lbl">Personnel Number:</td><td>${d.personnelNo || ""}</td><td class="lbl">CNIC:</td><td colspan="3">${d.cnic || ""}</td></tr>
+          <tr><td class="lbl">Date of Birth:</td><td>${d.dob || ""}</td><td class="lbl">Length of Service:</td><td colspan="3">${d.lengthOfService || ""}</td></tr>
+        </table>
+        <div class="slip-section-title">Employment Category: ${d.employmentCategory || ""}</div>
+        <table class="slip-info-table">
+          <tr><td class="lbl">Designation:</td><td colspan="3">${d.designation || ""}</td><td class="lbl">DDO:</td><td>${d.ddoTitle || ""}</td></tr>
+          <tr><td class="lbl">DDO Code:</td><td colspan="5">${d.ddoCode || ""}</td></tr>
+          <tr><td class="lbl">Payroll Section:</td><td>${d.payrollSection || ""}</td><td class="lbl">GPF Section:</td><td>${d.gpfSection || ""}</td></tr>
+          <tr><td class="lbl">GPF A/C No:</td><td>${d.gpfAccountNo || ""}</td><td class="lbl">GPF Interest:</td><td>${d.gpfInterestApplied || ""}</td><td class="lbl">GPF Balance:</td><td><b>${fmtAmount(d.gpfBalance)}</b></td></tr>
+        </table>
+        <div class="slip-section-title">Pay and Allowances: Pay scale: ${d.payScale || ""} &nbsp; BPS: ${d.bps || ""}</div>
+        <table class="slip-pay-table">
+          <thead><tr><th colspan="3">Wage type</th><th colspan="3">Wage type</th></tr></thead>
+          <tbody>${payRows}</tbody>
+        </table>
+        <div class="slip-section-title">Deductions - General</div>
+        <table class="slip-pay-table">
+          <tbody>${dedRows}</tbody>
+        </table>
+        ${(d.loans && d.loans.length) ? `
+        <div class="slip-section-title">Deductions - Loans and Advances</div>
+        <table class="slip-loan-table">
+          <thead><tr><th>Loan</th><th>Description</th><th>Principal</th><th>Deduction</th><th>Balance</th></tr></thead>
+          <tbody>${loanRows}</tbody>
+        </table>` : ""}
+        <table class="slip-summary-table">
+          <tr>
+            <td class="lbl">Gross Pay (Rs.):</td><td><b>${fmtAmount(d.grossPay)}</b></td>
+            <td class="lbl">Deductions (Rs.):</td><td><b>${fmtAmount(d.totalDeductions)}</b></td>
+            <td class="lbl">Net Pay (Rs.):</td><td><b>${fmtAmount(d.netPay)}</b></td>
+          </tr>
+        </table>
+        <table class="slip-info-table">
+          <tr><td class="lbl">Account Number:</td><td colspan="5">${d.accountNo || ""}</td></tr>
+          <tr><td class="lbl">Bank Details:</td><td colspan="5">${d.bankDetails || ""}</td></tr>
+        </table>
+      </div>`;
+    }
+
+    function handleSearchResult(res) {
+      hideLoading();
+      if (!res.success) {
+        showNotification(res.message, "error");
+        return;
+      }
+
+      const payslipHTML = generatePayslipHTML(res.data);
+      document.getElementById('payslipBody').innerHTML = payslipHTML;
+      openModal();
+      
+      setTimeout(() => {
+        const scroll = document.getElementById("payslipScroll");
+        if (scroll) scroll.scrollLeft = 0;
+      }, 50);
+
+      if (globalPopupStatus === "show") {
+        setTimeout(() => { openWhatsappPopup(); }, 1500);
+      }
+    }
+
+    function openModal() {
+      document.getElementById('payslipModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('payslipModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function openWhatsappPopup() {
+      if (globalPopupHeading) document.getElementById('popupHeading').innerText = globalPopupHeading;
+      if (globalPopupText) document.getElementById('popupText').innerText = globalPopupText;
+      if (globalPopupLink) document.getElementById('popupLink').href = globalPopupLink;
+      document.getElementById('whatsappPopupModal').classList.remove('hidden');
+    }
+
+    function closeWhatsappPopup() {
+      document.getElementById('whatsappPopupModal').classList.add('hidden');
+    }
+
+    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+      const element = document.getElementById('payslipBody');
+      const searchQuery = document.getElementById('searchQuery').value.replace(/[-\s]/g, "");
+      const category = document.getElementById('categorySelector').value;
+      const month = document.getElementById('monthSelector').value;
+      const year = document.getElementById('yearSelector').value;
+      
+      showLoading("پی ڈی ایف تیار کی جا رہی ہے۔ براہ کرم انتظار کریں...");
+      
+      const opt = {
+        margin:       [12, 12, 12, 12],
+        filename:     `PaySlip-${category}-${month}-${year}-${searchQuery}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      
+      html2pdf().from(element).set(opt).save().then(() => {
+        hideLoading();
+        showNotification("پے سلپ کامیابی سے ڈاؤن لوڈ کر دی گئی ہے!", "success");
+      }).catch(err => {
+        hideLoading();
+        showNotification("ڈاؤن لوڈنگ میں خلل آیا: " + err.toString(), "error");
+      });
+    });
+
+    function showNotification(text, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed bottom-5 left-5 right-5 sm:left-auto sm:max-w-md bg-white border-r-4 px-6 py-4 shadow-2xl rounded-2xl z-50 flex items-center justify-between transition-all-custom transform translate-y-20 opacity-0 urdu-text text-sm`;
+      
+      let borderClr = 'border-blue-500';
+      let icon = '<i class="fa-solid fa-circle-info text-blue-500 text-lg"></i>';
+      
+      if (type === 'success') borderClr = 'border-emerald-500', icon = '<i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>';
+      else if (type === 'error') borderClr = 'border-rose-500', icon = '<i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i>';
+      else if (type === 'warning') borderClr = 'border-amber-500', icon = '<i class="fa-solid fa-circle-exclamation text-amber-500 text-lg"></i>';
+      
+      notification.classList.add(borderClr);
+      notification.innerHTML = `<div class="flex items-center gap-3">${icon}<span class="text-slate-700 font-medium">${text}</span></div><button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600 transition-colors ml-2"><i class="fa-solid fa-xmark"></i></button>`;
+      
+      document.body.appendChild(notification);
+      setTimeout(() => notification.classList.remove('translate-y-20', 'opacity-0'), 50);
+      setTimeout(() => {
+        notification.classList.add('translate-y-20', 'opacity-0');
+        setTimeout(() => notification.remove(), 400);
+      }, 5000);
+    }
   </script>
 </body>
 </html>
