@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Online Payslip</title>
+  <title>ملازمین پے سلپ پورٹل</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -43,7 +43,7 @@
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* ===== Official Payslip Layout ===== */
+    /* ===== Official Payslip Layout (matches District Accounts Office format) ===== */
     .official-slip {
       direction: ltr;
       text-align: left;
@@ -237,6 +237,7 @@
       </form>
     </div>
 
+    <!-- Dynamic WhatsApp Channel Promotion Banner -->
     <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 relative overflow-hidden shadow-sm">
       <div class="absolute -right-10 -bottom-10 w-28 h-28 bg-green-200/30 rounded-full -z-10"></div>
       <div class="flex gap-4 items-start w-full sm:w-auto">
@@ -264,6 +265,7 @@
     </div>
 
     <div class="relative mx-auto mt-4 sm:fixed sm:bottom-6 sm:left-6 sm:mx-0 sm:mt-0 z-40 bg-white border border-slate-200/80 shadow-lg sm:shadow-2xl rounded-2xl p-4 max-w-full sm:w-64 flex flex-col gap-2 transition-all duration-500 hover:scale-105 border-r-4 border-r-teal-600" id="onlineCounterWidget">
+      
       <div class="flex items-center gap-3 border-b border-slate-100 pb-2">
         <div class="relative flex h-8 w-8 items-center justify-center shrink-0">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-20"></span>
@@ -276,6 +278,7 @@
           </p>
         </div>
       </div>
+
       <div class="flex items-center gap-3 pt-0.5">
         <div class="bg-slate-100 h-8 w-8 rounded-full flex items-center justify-center text-slate-500 shrink-0">
           <i class="fa-solid fa-users text-xs"></i>
@@ -286,6 +289,7 @@
           </p>
         </div>
       </div>
+
     </div>
 
   </main>
@@ -300,6 +304,7 @@
 
   <div id="payslipModal" class="fixed inset-0 z-40 overflow-y-auto hidden">
     <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
+
     <div class="flex min-h-screen items-center justify-center p-4">
       <div class="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden transform transition-all border border-slate-200">
         
@@ -339,6 +344,7 @@
     </div>
   </div>
 
+  <!-- 🌟 NEW DYNAMIC WHATSAPP POPUP MODAL (COLUMN H SE SHOW/HIDE HOGA) -->
   <div id="whatsappPopupModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
     <div class="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity" onclick="closeWhatsappPopup()"></div>
     <div class="flex min-h-screen items-center justify-center p-4">
@@ -361,19 +367,20 @@
   </div>
 
   <footer class="bg-slate-950 text-slate-500 py-6 border-t border-slate-900 mt-12 text-center text-xs">
-    <p class="urdu-text mb-2">محفوظ ڈیجیٹل سروسز - پے سلپ systeem © 2026</p>
+    <p class="urdu-text mb-2">محفوظ ڈیجیٹل سروسز - پے سلپ سسٹم © 2026</p>
     <p class="text-[11px] opacity-70 tracking-wide font-sans" style="direction: ltr !important; text-align: center !important;">
       © 2026 Babar Ali. All Rights Reserved | System v3.2
     </p>
   </footer>
 
   <script>
-    // ===== APNA GOOGLE APPS SCRIPT WEB APP URL YAHAN DALEIN =====
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCsuhGCUK5udkwRy-s6nxTVbAupICjOOm2KL9KdTEaEFx-9UaR8eqrG4s681yuOXk-6g/exec";
-
     const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', dateOpts);
 
+    // ===== APNA GOOGLE APPS SCRIPT WEB APP URL YAHAN DALEIN =====
+    const WEB_APP_URL = "PASTE_YOUR_DEPLOYED_WEB_APP_URL_HERE";
+
+    // Global variables to hold live data
     let myLiveUserId = sessionStorage.getItem('paySlipCounterUserId') || "";
     let globalPopupStatus = "Show";
     let globalPopupHeading = "";
@@ -381,8 +388,7 @@
     let globalPopupLink = "";
 
     function fetchRealLiveTraffic() {
-      const url = `${WEB_APP_URL}?action=traffic&userId=${myLiveUserId}`;
-      fetch(url)
+      fetch(`${WEB_APP_URL}?action=traffic&userId=${encodeURIComponent(myLiveUserId)}`)
         .then(res => res.json())
         .then(res => {
           if (res && res.success) {
@@ -397,30 +403,55 @@
         .catch(err => console.error("Counter sync failed: ", err));
     }
 
+    // Dynamic WhatsApp Banner & Popup Fetching Logic with Intelligent Fallbacks
     function fetchWhatsAppBannerDetails() {
-      const url = `${WEB_APP_URL}?action=banner`;
-      fetch(url)
+      fetch(`${WEB_APP_URL}?action=banner`)
         .then(res => res.json())
         .then(res => {
           if (res && res.success) {
-            if (res.bannerHeading) document.getElementById('bannerHeading').innerText = res.bannerHeading;
-            if (res.bannerText) document.getElementById('bannerText').innerText = res.bannerText;
-            if (res.bannerLink) document.getElementById('bannerLink').href = res.bannerLink;
-            
-            globalPopupStatus = res.popupStatus ? res.popupStatus.trim().toLowerCase() : "show";
-            globalPopupHeading = res.popupHeading || document.getElementById('bannerHeading').innerText;
-            globalPopupText = res.popupText || document.getElementById('bannerText').innerText;
-            globalPopupLink = res.popupLink || document.getElementById('bannerLink').href;
+
+            // 1. Home Page Banner Data (Columns E, F, G)
+            if (res.bannerHeading && res.bannerHeading.trim() !== "") {
+              document.getElementById('bannerHeading').innerText = res.bannerHeading;
+            }
+            if (res.bannerText && res.bannerText.trim() !== "") {
+              document.getElementById('bannerText').innerText = res.bannerText;
+            }
+            if (res.bannerLink && res.bannerLink.trim() !== "") {
+              document.getElementById('bannerLink').href = res.bannerLink;
+            }
+
+            // 2. Popup Active Trigger Status (Column H)
+            if (res.popupStatus) {
+              globalPopupStatus = res.popupStatus.trim().toLowerCase();
+            }
+
+            // 3. Popup Heading Fallback Logic (Column I -> Banner Heading)
+            globalPopupHeading = (res.popupHeading && res.popupHeading.trim() !== "")
+              ? res.popupHeading
+              : document.getElementById('bannerHeading').innerText;
+
+            // 4. Popup Description Fallback Logic (Column J -> Banner Text)
+            globalPopupText = (res.popupText && res.popupText.trim() !== "")
+              ? res.popupText
+              : document.getElementById('bannerText').innerText;
+
+            // 5. Popup URL Fallback Logic (Column K -> Banner Link)
+            globalPopupLink = (res.popupLink && res.popupLink.trim() !== "")
+              ? res.popupLink
+              : (res.bannerLink && res.bannerLink.trim() !== "" ? res.bannerLink : document.getElementById('bannerLink').href);
           }
         })
-        .catch(err => console.error("Failed to load WhatsApp data: ", err));
+        .catch(err => console.error("Failed to load live WhatsApp banner data: ", err));
     }
 
-    // Run traffic counter on initialization
-    if(WEB_APP_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
+    // Initialize triggers on page load
+    if (WEB_APP_URL && WEB_APP_URL !== "PASTE_YOUR_DEPLOYED_WEB_APP_URL_HERE") {
       fetchRealLiveTraffic();
       fetchWhatsAppBannerDetails();
-      setInterval(fetchRealLiveTraffic, 15000);
+      setInterval(fetchRealLiveTraffic, 15000); // 15 seconds real-time update interval
+    } else {
+      console.warn("WEB_APP_URL abhi set nahi hui — Index.html ke top par apna Apps Script Web App URL dalein.");
     }
 
     function showLoading(msg) {
@@ -431,28 +462,34 @@
     }
 
     function hideLoading() {
-      document.getElementById('loadingOverlay').classList.add('hidden');
+      const loader = document.getElementById('loadingOverlay');
+      loader.classList.add('hidden');
     }
 
-    // Main Fetch submission handler replacing old Iframe submission
     document.getElementById('searchForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
-      const category = document.getElementById('categorySelector').value;
-      const month = document.getElementById('monthSelector').value;
-      const year = document.getElementById('yearSelector').value;
+      const selectedCategory = document.getElementById('categorySelector').value;
+      const selectedMonth = document.getElementById('monthSelector').value;
+      const selectedYear = document.getElementById('yearSelector').value;
       const queryInput = document.getElementById('searchQuery').value;
+      
       const cleanQuery = queryInput.replace(/[-\s]/g, "");
       
-      if (!category || !month || !year || !cleanQuery) {
-        showNotification("براہ کرم تمام معلومات درست طریقے سے درج کریں!", "warning");
+      if (!selectedCategory || !selectedMonth || !selectedYear) {
+        showNotification("براہ کرم تمام ڈراپ ڈاؤنز منتخب کریں!", "warning");
+        return;
+      }
+      
+      if (!cleanQuery) {
+        showNotification("براہ کرم شناختی کارڈ یا پرسنل نمبر درج کریں!", "warning");
         return;
       }
       
       showLoading("پے سلپ تلاش کی جا رہی ہے، براہ کرم انتظار کریں...");
-      
-      const targetUrl = `${WEB_APP_URL}?action=search&category=${category}&month=${month}&year=${year}&query=${cleanQuery}`;
-      
+
+      const targetUrl = `${WEB_APP_URL}?action=search&category=${encodeURIComponent(selectedCategory)}&month=${encodeURIComponent(selectedMonth)}&year=${encodeURIComponent(selectedYear)}&query=${encodeURIComponent(cleanQuery)}`;
+
       fetch(targetUrl)
         .then(response => response.json())
         .then(handleSearchResult)
@@ -474,7 +511,6 @@
       return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // Updated buildPairedRows helper to match correct design output structures
     function buildPairedRows(items) {
       let rows = "";
       for (let i = 0; i < items.length; i += 2) {
@@ -500,48 +536,111 @@
       let loanRows = "";
       (d.loans || []).forEach(l => {
         loanRows += `<tr>
-          <td>${l.loanNo || ""}</td>
-          <td>${l.description || ""}</td>
-          <td class="ps-amount">${fmtAmount(l.principal)}</td>
-          <td class="ps-amount">${fmtAmount(l.deduction)}</td>
-          <td class="ps-amount">${fmtAmount(l.balance)}</td>
+          <td class="ps-loan-cell">${l.loanNo || ""}</td>
+          <td class="ps-loan-cell">${l.description || ""}</td>
+          <td class="ps-loan-cell ps-amount">${fmtAmount(l.principal)}</td>
+          <td class="ps-loan-cell ps-amount">${fmtAmount(l.deduction)}</td>
+          <td class="ps-loan-cell ps-amount">${fmtAmount(l.balance)}</td>
         </tr>`;
       });
 
       return `
       <div class="official-slip">
         <div class="slip-header">
-          <div class="slip-title">${d.officeTitle || ""}</div>
-          <div class="slip-subtitle">${d.officeSubTitle || ""}</div>
-          <div class="slip-month">Monthly Salary Statement (${d.monthYear || ""})</div>
+          <div class="slip-header-text">
+            <div class="slip-title">${d.officeTitle || ""}</div>
+            <div class="slip-subtitle">${d.officeSubTitle || ""}</div>
+            <div class="slip-month">Monthly Salary Statement (${d.monthYear || ""})</div>
+          </div>
         </div>
+
         <div class="slip-section-title">Personal Information of ${d.name || ""}${d.guardianName ? " " + (d.guardianRelation || "d/w/s of") + " " + d.guardianName : ""}</div>
-        <table class="slip-info-table">
-          <tr><td class="lbl">Personnel Number:</td><td>${d.personnelNo || ""}</td><td class="lbl">CNIC:</td><td colspan="3">${d.cnic || ""}</td></tr>
-          <tr><td class="lbl">Date of Birth:</td><td>${d.dob || ""}</td><td class="lbl">Length of Service:</td><td colspan="3">${d.lengthOfService || ""}</td></tr>
-        </table>
-        <div class="slip-section-title">Employment Category: ${d.employmentCategory || ""}</div>
-        <table class="slip-info-table">
-          <tr><td class="lbl">Designation:</td><td colspan="3">${d.designation || ""}</td><td class="lbl">DDO:</td><td>${d.ddoTitle || ""}</td></tr>
-          <tr><td class="lbl">DDO Code:</td><td colspan="5">${d.ddoCode || ""}</td></tr>
-          <tr><td class="lbl">Payroll Section:</td><td>${d.payrollSection || ""}</td><td class="lbl">GPF Section:</td><td>${d.gpfSection || ""}</td></tr>
-          <tr><td class="lbl">GPF A/C No:</td><td>${d.gpfAccountNo || ""}</td><td class="lbl">GPF Interest:</td><td>${d.gpfInterestApplied || ""}</td><td class="lbl">GPF Balance:</td><td><b>${fmtAmount(d.gpfBalance)}</b></td></tr>
-        </table>
-        <div class="slip-section-title">Pay and Allowances: Pay scale: ${d.payScale || ""} &nbsp; BPS: ${d.bps || ""}</div>
+
+<table class="slip-info-table">
+  <tr>
+    <td class="lbl">Personnel Number:</td>
+    <td>${d.personnelNo || ""}</td>
+
+    <td class="lbl">CNIC:</td>
+    <td colspan="3">${d.cnic || ""}</td>
+  </tr>
+
+  <tr>
+    <td class="lbl">Date of Birth:</td>
+    <td>${d.dob || ""}</td>
+
+    <td class="lbl">Length of Service:</td>
+    <td colspan="3">${d.lengthOfService || ""}</td>
+  </tr>
+</table>
+
+<div class="slip-section-title">Employment Category: ${d.employmentCategory || ""}</div>
+
+<table class="slip-info-table">
+  <tr>
+    <td class="lbl">Designation:</td>
+    <td colspan="3">${d.designation || ""}</td>
+    <td class="lbl">DDO:</td>
+    <td>${d.ddoTitle || ""}</td>
+  </tr>
+
+  <tr>
+    <td class="lbl">DDO Code:</td>
+    <td colspan="5">${d.ddoCode || ""}</td>
+  </tr>
+
+  <tr>
+    <td class="lbl">Payroll Section:</td>
+    <td>${d.payrollSection || ""}</td>
+
+    <td class="lbl">GPF Section:</td>
+    <td>${d.gpfSection || ""}</td>
+
+    <td></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td class="lbl">GPF A/C No:</td>
+    <td>${d.gpfAccountNo || ""}</td>
+
+    <td class="lbl">GPF Interest:</td>
+    <td>${d.gpfInterestApplied || ""}</td>
+
+    <td class="lbl">GPF Balance:</td>
+    <td><b>${fmtAmount(d.gpfBalance)}</b></td>
+  </tr>
+</table>
+        
+
+        <div class="slip-section-title">Pay and Allowances: Pay scale: ${d.payScale || ""} &nbsp; Pay Scale Type: ${d.payScaleType || ""} &nbsp; BPS: ${d.bps || ""} &nbsp; Pay Stage: ${d.payStage || ""}</div>
         <table class="slip-pay-table">
           <thead><tr><th colspan="3">Wage type</th><th colspan="3">Wage type</th></tr></thead>
           <tbody>${payRows}</tbody>
         </table>
+
         <div class="slip-section-title">Deductions - General</div>
         <table class="slip-pay-table">
           <tbody>${dedRows}</tbody>
         </table>
+
         ${(d.loans && d.loans.length) ? `
         <div class="slip-section-title">Deductions - Loans and Advances</div>
         <table class="slip-loan-table">
           <thead><tr><th>Loan</th><th>Description</th><th>Principal</th><th>Deduction</th><th>Balance</th></tr></thead>
           <tbody>${loanRows}</tbody>
         </table>` : ""}
+
+        <div class="slip-section-title">Deductions - Income Tax</div>
+        <table class="slip-info-table">
+          <tr>
+            <td class="lbl">Payable:</td><td>${fmtAmount(d.incomeTax && d.incomeTax.payable)}</td>
+            <td class="lbl">Recovered:</td><td>${fmtAmount(d.incomeTax && d.incomeTax.recoveredTill)}</td>
+            <td class="lbl">Exempted:</td><td>${d.incomeTax ? d.incomeTax.exempted : ""}</td>
+            <td class="lbl">Recoverable:</td><td>${fmtAmount(d.incomeTax && d.incomeTax.recoverable)}</td>
+          </tr>
+        </table>
+
         <table class="slip-summary-table">
           <tr>
             <td class="lbl">Gross Pay (Rs.):</td><td><b>${fmtAmount(d.grossPay)}</b></td>
@@ -549,10 +648,18 @@
             <td class="lbl">Net Pay (Rs.):</td><td><b>${fmtAmount(d.netPay)}</b></td>
           </tr>
         </table>
+
         <table class="slip-info-table">
+          <tr><td class="lbl">Payee Name:</td><td colspan="5">${d.payeeName || ""}</td></tr>
           <tr><td class="lbl">Account Number:</td><td colspan="5">${d.accountNo || ""}</td></tr>
           <tr><td class="lbl">Bank Details:</td><td colspan="5">${d.bankDetails || ""}</td></tr>
         </table>
+
+        <div class="slip-footer">
+          <p>${d.footerNote1 || "System generated document"}</p>
+          <p>* All amounts are in Pak Rupees</p>
+          <p>${d.footerNote2 || ""}</p>
+        </div>
       </div>`;
     }
 
@@ -569,11 +676,16 @@
       
       setTimeout(() => {
         const scroll = document.getElementById("payslipScroll");
-        if (scroll) scroll.scrollLeft = 0;
+        if (scroll) {
+          scroll.scrollLeft = 0;
+        }
       }, 50);
 
+      // 🌟 IF SHEET COLUMN H IS 'SHOW', TRIGGER WHATSAPP POPUP AFTER 1.5 SECONDS
       if (globalPopupStatus === "show") {
-        setTimeout(() => { openWhatsappPopup(); }, 1500);
+        setTimeout(() => {
+          openWhatsappPopup();
+        }, 1500);
       }
     }
 
@@ -587,10 +699,12 @@
       document.body.style.overflow = '';
     }
 
+    // 🌟 POPUP TRIGGER FUNCTIONS WITH FALLBACK BINDING
     function openWhatsappPopup() {
       if (globalPopupHeading) document.getElementById('popupHeading').innerText = globalPopupHeading;
       if (globalPopupText) document.getElementById('popupText').innerText = globalPopupText;
       if (globalPopupLink) document.getElementById('popupLink').href = globalPopupLink;
+      
       document.getElementById('whatsappPopupModal').classList.remove('hidden');
     }
 
@@ -612,7 +726,8 @@
         filename:     `PaySlip-${category}-${month}-${year}-${searchQuery}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
       };
       
       html2pdf().from(element).set(opt).save().then(() => {
