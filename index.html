@@ -320,12 +320,12 @@
           </button>
         </div>
 
-        <div id="payslipScroll" class="p-6 overflow-x-auto max-h-[70vh]" style="direction:ltr;">
+        <div id="payslipScroll" class="p-3 sm:p-6 overflow-x-auto overflow-y-auto max-h-[45vh] sm:max-h-[70vh]" style="direction:ltr;">
           <div id="payslipBody" class="payslip-container p-6 border border-slate-300 rounded shadow-sm bg-white min-w-[700px]">
           </div>
         </div>
 
-        <div class="bg-slate-50 border-t border-slate-100 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="bg-slate-50 border-t border-slate-100 px-4 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <span class="text-xs text-slate-500 font-medium">
             <i class="fa-solid fa-circle-info ml-1 text-slate-400"></i>
             محفوظ پی ڈی ایف پرنٹ یا ڈاؤن لوڈ کرنے کے لیے بٹن دبائیں۔
@@ -378,7 +378,7 @@
     document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', dateOpts);
 
     // ===== APNA GOOGLE APPS SCRIPT WEB APP URL YAHAN DALEIN =====
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCsuhGCUK5udkwRy-s6nxTVbAupICjOOm2KL9KdTEaEFx-9UaR8eqrG4s681yuOXk-6g/exec";
+    const WEB_APP_URL = "PASTE_YOUR_DEPLOYED_WEB_APP_URL_HERE";
 
     // Global variables to hold live data
     let myLiveUserId = sessionStorage.getItem('paySlipCounterUserId') || "";
