@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ملازمین پے سلپ پورٹل</title>
+  <title>Online Payslip</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -381,7 +381,7 @@
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCsuhGCUK5udkwRy-s6nxTVbAupICjOOm2KL9KdTEaEFx-9UaR8eqrG4s681yuOXk-6g/exec";
 
     // Global variables to hold live data
-    let myLiveUserId = sessionStorage.getItem('paySlipCounterUserId') || "";
+    let myLiveUserId = localStorage.getItem('paySlipCounterUserId') || "";
     let globalPopupStatus = "Show";
     let globalPopupHeading = "";
     let globalPopupText = "";
@@ -394,7 +394,7 @@
           if (res && res.success) {
             if (!myLiveUserId && res.userId) {
               myLiveUserId = res.userId;
-              sessionStorage.setItem('paySlipCounterUserId', res.userId);
+              localStorage.setItem('paySlipCounterUserId', res.userId);
             }
             document.getElementById('onlineCount').innerText = res.liveCount;
             document.getElementById('totalVisitorCount').innerText = res.totalCount.toLocaleString();
