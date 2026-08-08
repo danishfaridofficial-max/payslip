@@ -44,6 +44,12 @@
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    /* Disabled "Coming Soon" option styling */
+    select option:disabled {
+      color: #94a3b8;
+      font-style: italic;
+    }
+
     /* ===== Official Payslip Layout (matches District Accounts Office format) ===== */
     .official-slip {
       direction: ltr;
@@ -150,14 +156,28 @@
       <div class="absolute -right-16 -top-16 w-36 h-36 bg-teal-50 rounded-full -z-10"></div>
       <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-emerald-50 rounded-full -z-10"></div>
 
-      <h2 class="text-xl sm:text-2xl font-bold text-teal-900 mb-4 urdu-text">نوٹ: یہ صرف ضلع بنوں کے لیے ہے۔اپنا پے سلپ تلاش کریں</h2>
+      <h2 class="text-xl sm:text-2xl font-bold text-teal-900 mb-4 urdu-text">اپنا ضلع منتخب کریں اور پے سلپ تلاش کریں</h2>
       <p class="text-slate-600 text-sm mb-6 leading-relaxed">
-        اپنی مطلوبہ پے سلپ تلاش کرنے کے لیے نیچے دیے گئے فارم سے متعلقہ ضلع، مہینہ، سال کا انتخاب کریں اور بغیر ڈیش کے نمبر درج کریں۔
+        اپنی مطلوبہ پے سلپ تلاش کرنے کے لیے پہلے اپنا ضلع منتخب کریں، پھر نیچے دیے گئے فارم سے متعلقہ کیٹیگری، مہینہ، سال کا انتخاب کریں اور بغیر ڈیش کے نمبر درج کریں۔
       </p>
 
       <form id="searchForm" class="space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+
+          <div class="flex flex-col">
+            <label for="districtSelector" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
+              <i class="fa-solid fa-map-location-dot text-teal-600 ml-2"></i> ضلع منتخب کریں:
+            </label>
+            <div class="relative">
+              <select id="districtSelector" required class="w-full bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom appearance-none cursor-pointer text-sm urdu-text">
+                <option value="">لوڈ ہو رہا ہے...</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                <i class="fa-solid fa-chevron-down text-xs"></i>
+              </div>
+            </div>
+          </div>
+
           <div class="flex flex-col">
             <label for="categorySelector" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
               <i class="fa-solid fa-layer-group text-teal-600 ml-2"></i> کیٹیگری:
@@ -180,18 +200,7 @@
             </label>
             <div class="relative">
               <select id="monthSelector" required class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom appearance-none cursor-pointer text-sm">
-                <option value="May">May</option>
-                <option value="Jun">Jun</option>
-                <option value="Jul">Jul</option>
-                <option value="Aug">Aug</option>
-                <option value="Sep">Sep</option>
-                <option value="Oct">Oct</option>
-                <option value="Nov">Nov</option>
-                <option value="Dec">Dec</option>
-                <option value="Jan">Jan</option>
-                <option value="Feb">Feb</option>
-                <option value="Mar">Mar</option>
-                <option value="Apr">Apr</option>
+                <option value="">لوڈ ہو رہا ہے...</option>
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
                 <i class="fa-solid fa-chevron-down text-xs"></i>
@@ -370,7 +379,7 @@
   <footer class="bg-slate-950 text-slate-500 py-6 border-t border-slate-900 mt-12 text-center text-xs">
     <p class="urdu-text mb-2">محفوظ ڈیجیٹل سروسز - پے سلپ سسٹم © 2026</p>
     <p class="text-[11px] opacity-70 tracking-wide font-sans" style="direction: ltr !important; text-align: center !important;">
-      © 2026 Babar Ali. All Rights Reserved | System v3.2
+      © 2026 Babar Ali. All Rights Reserved | System v3.3
     </p>
   </footer>
 
@@ -387,6 +396,104 @@
     let globalPopupHeading = "";
     let globalPopupText = "";
     let globalPopupLink = "";
+
+    // ===== NEW: District Dropdown Loader (Coming Soon Aware) =====
+    function fetchDistrictsList() {
+      const districtSelect = document.getElementById('districtSelector');
+
+      fetch(`${WEB_APP_URL}?action=districts`)
+        .then(res => res.json())
+        .then(res => {
+          districtSelect.innerHTML = "";
+
+          if (!res || !res.success || !res.districts || !res.districts.length) {
+            const opt = document.createElement('option');
+            opt.value = "";
+            opt.innerText = "کوئی ضلع دستیاب نہیں";
+            districtSelect.appendChild(opt);
+            return;
+          }
+
+          let firstActiveValue = "";
+
+          res.districts.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.code;
+
+            if (d.active) {
+              opt.innerText = d.name;
+              if (!firstActiveValue) firstActiveValue = d.code;
+            } else {
+              opt.innerText = d.name + " (جلد آ رہا ہے)";
+              opt.disabled = true;
+            }
+
+            districtSelect.appendChild(opt);
+          });
+
+          // Default-select the first Active district (e.g. Bannu)
+          if (firstActiveValue) {
+            districtSelect.value = firstActiveValue;
+          }
+
+          // Now that a district is selected, load its month availability
+          fetchMonthsAvailability();
+        })
+        .catch(err => {
+          console.error("District list load failed: ", err);
+          districtSelect.innerHTML = '<option value="">فہرست لوڈ نہیں ہو سکی</option>';
+        });
+    }
+
+    // ===== NEW: Month Dropdown Loader (Coming Soon Aware, per District+Year) =====
+    function fetchMonthsAvailability() {
+      const district = document.getElementById('districtSelector').value;
+      const year = document.getElementById('yearSelector').value;
+      const monthSelect = document.getElementById('monthSelector');
+
+      if (!district || !year) return;
+
+      monthSelect.innerHTML = '<option value="">لوڈ ہو رہا ہے...</option>';
+
+      fetch(`${WEB_APP_URL}?action=months&district=${encodeURIComponent(district)}&year=${encodeURIComponent(year)}`)
+        .then(res => res.json())
+        .then(res => {
+          monthSelect.innerHTML = "";
+
+          if (!res || !res.success || !res.months || !res.months.length) {
+            const opt = document.createElement('option');
+            opt.value = "";
+            opt.innerText = "کوئی مہینہ دستیاب نہیں";
+            monthSelect.appendChild(opt);
+            return;
+          }
+
+          let lastActiveValue = "";
+
+          res.months.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m.month;
+
+            if (m.active) {
+              opt.innerText = m.month;
+              lastActiveValue = m.month; // most recently uploaded active month wins as default
+            } else {
+              opt.innerText = m.month + " (جلد آئے گا)";
+              opt.disabled = true;
+            }
+
+            monthSelect.appendChild(opt);
+          });
+
+          if (lastActiveValue) {
+            monthSelect.value = lastActiveValue;
+          }
+        })
+        .catch(err => {
+          console.error("Months availability load failed: ", err);
+          monthSelect.innerHTML = '<option value="">فہرست لوڈ نہیں ہو سکی</option>';
+        });
+    }
 
     function fetchRealLiveTraffic() {
       fetch(`${WEB_APP_URL}?action=traffic&userId=${encodeURIComponent(myLiveUserId)}`)
@@ -411,7 +518,7 @@
         .then(res => {
           if (res && res.success) {
 
-            // 1. Home Page Banner Data (Columns E, F, G)
+            // 1. Home Page Banner Data (Columns F, G, H after District column shift)
             if (res.bannerHeading && res.bannerHeading.trim() !== "") {
               document.getElementById('bannerHeading').innerText = res.bannerHeading;
             }
@@ -422,22 +529,22 @@
               document.getElementById('bannerLink').href = res.bannerLink;
             }
 
-            // 2. Popup Active Trigger Status (Column H)
+            // 2. Popup Active Trigger Status
             if (res.popupStatus) {
               globalPopupStatus = res.popupStatus.trim().toLowerCase();
             }
 
-            // 3. Popup Heading Fallback Logic (Column I -> Banner Heading)
+            // 3. Popup Heading Fallback Logic (-> Banner Heading)
             globalPopupHeading = (res.popupHeading && res.popupHeading.trim() !== "")
               ? res.popupHeading
               : document.getElementById('bannerHeading').innerText;
 
-            // 4. Popup Description Fallback Logic (Column J -> Banner Text)
+            // 4. Popup Description Fallback Logic (-> Banner Text)
             globalPopupText = (res.popupText && res.popupText.trim() !== "")
               ? res.popupText
               : document.getElementById('bannerText').innerText;
 
-            // 5. Popup URL Fallback Logic (Column K -> Banner Link)
+            // 5. Popup URL Fallback Logic (-> Banner Link)
             globalPopupLink = (res.popupLink && res.popupLink.trim() !== "")
               ? res.popupLink
               : (res.bannerLink && res.bannerLink.trim() !== "" ? res.bannerLink : document.getElementById('bannerLink').href);
@@ -448,6 +555,7 @@
 
     // Initialize triggers on page load
     if (WEB_APP_URL && WEB_APP_URL !== "PASTE_YOUR_DEPLOYED_WEB_APP_URL_HERE") {
+      fetchDistrictsList();
       fetchRealLiveTraffic();
       fetchWhatsAppBannerDetails();
       setInterval(fetchRealLiveTraffic, 15000); // 15 seconds real-time update interval
@@ -469,14 +577,20 @@
 
     document.getElementById('searchForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      
+
+      const selectedDistrict = document.getElementById('districtSelector').value;
       const selectedCategory = document.getElementById('categorySelector').value;
       const selectedMonth = document.getElementById('monthSelector').value;
       const selectedYear = document.getElementById('yearSelector').value;
       const queryInput = document.getElementById('searchQuery').value;
       
       const cleanQuery = queryInput.replace(/[-\s]/g, "");
-      
+
+      if (!selectedDistrict) {
+        showNotification("براہ کرم پہلے اپنا ضلع منتخب کریں!", "warning");
+        return;
+      }
+
       if (!selectedCategory || !selectedMonth || !selectedYear) {
         showNotification("براہ کرم تمام ڈراپ ڈاؤنز منتخب کریں!", "warning");
         return;
@@ -489,7 +603,7 @@
       
       showLoading("پے سلپ تلاش کی جا رہی ہے، براہ کرم انتظار کریں...");
 
-      const targetUrl = `${WEB_APP_URL}?action=search&category=${encodeURIComponent(selectedCategory)}&month=${encodeURIComponent(selectedMonth)}&year=${encodeURIComponent(selectedYear)}&query=${encodeURIComponent(cleanQuery)}`;
+      const targetUrl = `${WEB_APP_URL}?action=search&district=${encodeURIComponent(selectedDistrict)}&category=${encodeURIComponent(selectedCategory)}&month=${encodeURIComponent(selectedMonth)}&year=${encodeURIComponent(selectedYear)}&query=${encodeURIComponent(cleanQuery)}`;
 
       fetch(targetUrl)
         .then(response => response.json())
@@ -500,8 +614,12 @@
         });
     });
 
+    document.getElementById('districtSelector').addEventListener('change', fetchMonthsAvailability);
+    document.getElementById('yearSelector').addEventListener('change', fetchMonthsAvailability);
+
     document.getElementById('resetBtn').addEventListener('click', function() {
       document.getElementById('searchForm').reset();
+      fetchMonthsAvailability();
       showNotification("فارم صاف کر دیا گیا ہے", "info");
     });
 
@@ -682,7 +800,7 @@
         }
       }, 50);
 
-      // 🌟 IF SHEET COLUMN H IS 'SHOW', TRIGGER WHATSAPP POPUP AFTER 1.5 SECONDS
+      // 🌟 IF SHEET POPUP STATUS IS 'SHOW', TRIGGER WHATSAPP POPUP AFTER 1.5 SECONDS
       if (globalPopupStatus === "show") {
         setTimeout(() => {
           openWhatsappPopup();
@@ -716,6 +834,7 @@
     document.getElementById('downloadPdfBtn').addEventListener('click', function() {
       const element = document.getElementById('payslipBody');
       const searchQuery = document.getElementById('searchQuery').value.replace(/[-\s]/g, "");
+      const district = document.getElementById('districtSelector').value;
       const category = document.getElementById('categorySelector').value;
       const month = document.getElementById('monthSelector').value;
       const year = document.getElementById('yearSelector').value;
@@ -724,7 +843,7 @@
       
       const opt = {
         margin:       [12, 12, 12, 12],
-        filename:     `PaySlip-${category}-${month}-${year}-${searchQuery}.pdf`,
+        filename:     `PaySlip-${district}-${category}-${month}-${year}-${searchQuery}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
