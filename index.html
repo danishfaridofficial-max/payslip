@@ -164,7 +164,8 @@
             </label>
             <div class="relative">
               <select id="districtSelector" required class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom appearance-none cursor-pointer text-sm">
-                <!-- Options are populated dynamically by JS: available districts enabled, rest shown as "Coming Soon" and disabled -->
+                <!-- Default shown immediately on page load; JS confirms/updates this once the backend responds -->
+                <option value="Bannu">Bannu</option>
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
                 <i class="fa-solid fa-chevron-down text-xs"></i>
