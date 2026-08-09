@@ -150,14 +150,28 @@
       <div class="absolute -right-16 -top-16 w-36 h-36 bg-teal-50 rounded-full -z-10"></div>
       <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-emerald-50 rounded-full -z-10"></div>
 
-      <h2 class="text-xl sm:text-2xl font-bold text-teal-900 mb-4 urdu-text">نوٹ: یہ صرف ضلع بنوں کے لیے ہے۔اپنا پے سلپ تلاش کریں</h2>
+      <h2 class="text-xl sm:text-2xl font-bold text-teal-900 mb-4 urdu-text">اپنا ضلع منتخب کریں اور پے سلپ تلاش کریں</h2>
       <p class="text-slate-600 text-sm mb-6 leading-relaxed">
-        اپنی مطلوبہ پے سلپ تلاش کرنے کے لیے نیچے دیے گئے فارم سے متعلقہ ضلع، مہینہ، سال کا انتخاب کریں اور بغیر ڈیش کے نمبر درج کریں۔
+        اپنی مطلوبہ پے سلپ تلاش کرنے کے لیے نیچے دیے گئے فارم سے متعلقہ ضلع، کیٹیگری، مہینہ، سال کا انتخاب کریں اور بغیر ڈیش کے نمبر درج کریں۔
       </p>
 
       <form id="searchForm" class="space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+
+          <div class="flex flex-col">
+            <label for="districtSelector" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
+              <i class="fa-solid fa-map-location-dot text-teal-600 ml-2"></i> اپنا ضلع منتخب کریں:
+            </label>
+            <div class="relative">
+              <select id="districtSelector" required class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom appearance-none cursor-pointer text-sm">
+                <!-- Options are populated dynamically by JS: available districts enabled, rest shown as "Coming Soon" and disabled -->
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                <i class="fa-solid fa-chevron-down text-xs"></i>
+              </div>
+            </div>
+          </div>
+
           <div class="flex flex-col">
             <label for="categorySelector" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
               <i class="fa-solid fa-layer-group text-teal-600 ml-2"></i> کیٹیگری:
@@ -381,6 +395,11 @@
     // ===== APNA GOOGLE APPS SCRIPT WEB APP URL YAHAN DALEIN =====
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCsuhGCUK5udkwRy-s6nxTVbAupICjOOm2KL9KdTEaEFx-9UaR8eqrG4s681yuOXk-6g/exec";
 
+    // ===== Districts shown in the dropdown =====
+    // Only districts returned by the backend (action=districts) as "Active" will be enabled.
+    // The other one shows up as disabled "(جلد آرہا ہے)" / Coming Soon.
+    const ALL_KP_DISTRICTS = ["Bannu", "Lakki Marwat"];
+
     // Global variables to hold live data
     let myLiveUserId = localStorage.getItem('paySlipCounterUserId') || "";
     let globalPopupStatus = "Show";
@@ -446,10 +465,53 @@
         .catch(err => console.error("Failed to load live WhatsApp banner data: ", err));
     }
 
+    // Populates the District dropdown: enabled options for districts with real data,
+    // disabled "Coming Soon" options for everything else.
+    function populateDistrictDropdown(availableDistricts) {
+      const select = document.getElementById('districtSelector');
+      select.innerHTML = "";
+
+      const availableLower = (availableDistricts || []).map(d => d.toLowerCase());
+
+      ALL_KP_DISTRICTS.forEach(district => {
+        const isAvailable = availableLower.includes(district.toLowerCase());
+        const opt = document.createElement('option');
+        opt.value = district;
+        opt.textContent = isAvailable ? district : `${district} (جلد آرہا ہے)`;
+        if (!isAvailable) {
+          opt.disabled = true;
+        }
+        select.appendChild(opt);
+      });
+
+      // Auto-select the first available district so the form has a valid default
+      const firstAvailable = ALL_KP_DISTRICTS.find(d => availableLower.includes(d.toLowerCase()));
+      if (firstAvailable) {
+        select.value = firstAvailable;
+      }
+    }
+
+    function fetchAvailableDistricts() {
+      fetch(`${WEB_APP_URL}?action=districts`)
+        .then(res => res.json())
+        .then(res => {
+          if (res && res.success) {
+            populateDistrictDropdown(res.districts);
+          } else {
+            populateDistrictDropdown(["Bannu"]); // safe fallback
+          }
+        })
+        .catch(err => {
+          console.error("Failed to load districts: ", err);
+          populateDistrictDropdown(["Bannu"]); // safe fallback if API call fails
+        });
+    }
+
     // Initialize triggers on page load
     if (WEB_APP_URL && WEB_APP_URL !== "PASTE_YOUR_DEPLOYED_WEB_APP_URL_HERE") {
       fetchRealLiveTraffic();
       fetchWhatsAppBannerDetails();
+      fetchAvailableDistricts();
       setInterval(fetchRealLiveTraffic, 15000); // 15 seconds real-time update interval
     } else {
       console.warn("WEB_APP_URL abhi set nahi hui — Index.html ke top par apna Apps Script Web App URL dalein.");
@@ -469,14 +531,20 @@
 
     document.getElementById('searchForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      
+
+      const selectedDistrict = document.getElementById('districtSelector').value;
       const selectedCategory = document.getElementById('categorySelector').value;
       const selectedMonth = document.getElementById('monthSelector').value;
       const selectedYear = document.getElementById('yearSelector').value;
       const queryInput = document.getElementById('searchQuery').value;
       
       const cleanQuery = queryInput.replace(/[-\s]/g, "");
-      
+
+      if (!selectedDistrict) {
+        showNotification("براہ کرم ضلع منتخب کریں!", "warning");
+        return;
+      }
+
       if (!selectedCategory || !selectedMonth || !selectedYear) {
         showNotification("براہ کرم تمام ڈراپ ڈاؤنز منتخب کریں!", "warning");
         return;
@@ -489,7 +557,7 @@
       
       showLoading("پے سلپ تلاش کی جا رہی ہے، براہ کرم انتظار کریں...");
 
-      const targetUrl = `${WEB_APP_URL}?action=search&category=${encodeURIComponent(selectedCategory)}&month=${encodeURIComponent(selectedMonth)}&year=${encodeURIComponent(selectedYear)}&query=${encodeURIComponent(cleanQuery)}`;
+      const targetUrl = `${WEB_APP_URL}?action=search&district=${encodeURIComponent(selectedDistrict)}&category=${encodeURIComponent(selectedCategory)}&month=${encodeURIComponent(selectedMonth)}&year=${encodeURIComponent(selectedYear)}&query=${encodeURIComponent(cleanQuery)}`;
 
       fetch(targetUrl)
         .then(response => response.json())
@@ -716,6 +784,7 @@
     document.getElementById('downloadPdfBtn').addEventListener('click', function() {
       const element = document.getElementById('payslipBody');
       const searchQuery = document.getElementById('searchQuery').value.replace(/[-\s]/g, "");
+      const district = document.getElementById('districtSelector').value;
       const category = document.getElementById('categorySelector').value;
       const month = document.getElementById('monthSelector').value;
       const year = document.getElementById('yearSelector').value;
@@ -724,7 +793,7 @@
       
       const opt = {
         margin:       [12, 12, 12, 12],
-        filename:     `PaySlip-${category}-${month}-${year}-${searchQuery}.pdf`,
+        filename:     `PaySlip-${district}-${category}-${month}-${year}-${searchQuery}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
