@@ -123,6 +123,31 @@
       color: #444;
     }
     .official-slip .slip-footer p { margin: 1px 0; }
+
+    /* ===== Scrolling News Ticker (temporary alert bar) ===== */
+    .ticker-bar {
+      background: #ecfdf5;
+      border-bottom: 2px solid #5eead4;
+      overflow: hidden;
+      white-space: nowrap;
+      height: 42px;
+      position: relative;
+    }
+    .ticker-text {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      color: #dc2626;
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap;
+      animation: scrollTickerLTR 25s linear infinite;
+      will-change: transform;
+    }
+    @keyframes scrollTickerLTR {
+      from { transform: translate(-100%, -50%); }
+      to   { transform: translate(100vw, -50%); }
+    }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col justify-between text-slate-800">
@@ -143,6 +168,13 @@
       </div>
     </div>
   </header>
+
+  <!-- 🔴 Temporary Scrolling News Ticker — remove this block once August payslip data is uploaded -->
+  <div class="ticker-bar">
+    <div class="ticker-text urdu-text">
+      ⚠️ اہم خبر: ابھی تک اگست کا پے سلپ اپلوڈ نہیں ہوا۔ جیسے ہی اپلوڈ ہوگا، آپ کو ہمارے واٹس ایپ چینل پر اطلاع مل جائے گی۔ جن ملازمین نے ابھی تک چینل جوائن نہیں کیا، وہ جلد جوائن کر لیں۔
+    </div>
+  </div>
 
   <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8">
     
