@@ -479,6 +479,17 @@
       .wa-button { grid-column: 1 / -1; width: 100%; }
     }
 
+
+    /* ===== Mobile fix: icon grid column (56px) ke barabar rahe, text par na aaye ===== */
+    @media (max-width: 620px) {
+      .android-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+      }
+      .android-icon svg { width: 30px; height: 30px; }
+    }
+
 </style>
 </head>
 <body>
