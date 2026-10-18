@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="google-site-verification" content="nW6hpsebE5M8I7U0sr2B9jCowzjOsn254XaouMNGRuo" />
-  <title>Online Payslip</title>
+  <meta name="description" content="Online Payslip Bannu – Check your monthly pay slip online. KPK employees can search salary slips by CNIC or personal number. Fast, secure and completely free.">
+  <title>Online Payslip Bannu – آن لائن پے سلپ پورٹل</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -381,7 +382,58 @@
     }
 
 
-</style>
+
+    /* ===== FAQ accordion — UI same as page ===== */
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+    .faq-item.open .faq-a { max-height: 500px; }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-arrow { transition: transform .3s ease; }
+    .faq-item.open { border-color: #16a34a; }
+  
+    /* ===== Mobile fix: app-panel stacks like the maintenance page (620px) ===== */
+    @media (max-width: 620px) {
+      .app-panel { grid-template-columns: 56px minmax(0, 1fr); gap: 14px; padding: 18px; }
+      .download-button { grid-column: 1 / -1; width: 100%; }
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "بنوں میں online payslip bannu کیسے چیک کریں؟",
+        "acceptedAnswer": { "@type": "Answer", "text": "اپنا ضلع (بنوں)، مہینہ اور سال منتخب کریں، پھر اپنا شناختی کارڈ نمبر یا پرسنل نمبر لکھ کر تلاش دبائیں — آپ کی online payslip bannu فوراً ظاہر ہو جائے گی۔" }
+      },
+      {
+        "@type": "Question",
+        "name": "کیا online payslip bannu ڈاؤن لوڈ ہو سکتی ہے؟",
+        "acceptedAnswer": { "@type": "Answer", "text": "جی ہاں — online payslip bannu ظاہر ہونے کے بعد اسے ڈاؤن لوڈ یا پرنٹ بھی کر سکتے ہیں۔" }
+      },
+      {
+        "@type": "Question",
+        "name": "online payslip bannu چیک کرنے کے لیے کیا ضروری ہے؟",
+        "acceptedAnswer": { "@type": "Answer", "text": "صرف آپ کا شناختی کارڈ نمبر یا پرسنل نمبر درکار ہے۔ کسی اکاؤنٹ یا رجسٹریشن کی ضرورت نہیں — یہ سروس بالکل مفت ہے۔" }
+      },
+      {
+        "@type": "Question",
+        "name": "کیا پرانے مہینوں کی online payslip bannu بھی مل سکتی ہے؟",
+        "acceptedAnswer": { "@type": "Answer", "text": "جی ہاں، مہینہ اور سال تبدیل کر کے پچھلے مہینوں کی online payslip bannu بھی دیکھی جا سکتی ہے (دستیاب ریکارڈ کے مطابق)۔" }
+      },
+      {
+        "@type": "Question",
+        "name": "کیا موبائل ایپ سے بھی online payslip bannu دیکھی جا سکتی ہے؟",
+        "acceptedAnswer": { "@type": "Answer", "text": "جی ہاں، اسی پیج پر ایپ ڈاؤن لوڈ کریں بٹن سے اینڈرائیڈ ایپ مفت ڈاؤن لوڈ کریں اور موبائل پر online payslip bannu دیکھیں۔" }
+      },
+      {
+        "@type": "Question",
+        "name": "online payslip bannu تلاش کرنے میں مسئلہ ہو تو کیا کریں؟",
+        "acceptedAnswer": { "@type": "Answer", "text": "شناختی کارڈ نمبر بغیر ڈیش کے لکھیں اور نام درست سپیلنگ کے ساتھ درج کریں۔ مسئلہ برقرار رہے تو ہمارا واٹس ایپ چینل جوائن کر کے رابطہ کریں۔" }
+      }
+    ]
+  }
+  </script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col justify-between text-slate-800">
 
@@ -593,6 +645,56 @@
       </div>
 
     </div>
+
+    <!-- FAQs — SEO (UI same as page) -->
+    <section class="mt-12" aria-label="اکثر پوچھے گئے سوالات">
+      <h2 class="text-xl sm:text-2xl font-bold text-teal-900 mb-2 urdu-text">اکثر پوچھے گئے سوالات</h2>
+      <p class="text-slate-500 text-sm urdu-text mb-6"><bdi>online payslip bannu</bdi> سے متعلق عام سوالات کے جوابات</p>
+      <div class="space-y-3" id="faqList">
+      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
+        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
+          <span class="font-bold text-slate-800 urdu-text text-[15px]">بنوں میں <bdi>online payslip bannu</bdi> کیسے چیک کریں؟</span>
+          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
+        </button>
+        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">اپنا ضلع (بنوں)، مہینہ اور سال منتخب کریں، پھر اپنا شناختی کارڈ نمبر یا پرسنل نمبر لکھ کر تلاش دبائیں — آپ کی <b>online payslip bannu</b> فوراً ظاہر ہو جائے گی۔</p></div>
+      </div>
+      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
+        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
+          <span class="font-bold text-slate-800 urdu-text text-[15px]">کیا <bdi>online payslip bannu</bdi> ڈاؤن لوڈ ہو سکتی ہے؟</span>
+          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
+        </button>
+        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">جی ہاں — <b>online payslip bannu</b> ظاہر ہونے کے بعد اسے ڈاؤن لوڈ یا پرنٹ بھی کر سکتے ہیں۔</p></div>
+      </div>
+      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
+        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
+          <span class="font-bold text-slate-800 urdu-text text-[15px]"><bdi>online payslip bannu</bdi> چیک کرنے کے لیے کیا ضروری ہے؟</span>
+          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
+        </button>
+        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">صرف آپ کا شناختی کارڈ نمبر یا پرسنل نمبر درکار ہے۔ کسی اکاؤنٹ یا رجسٹریشن کی ضرورت نہیں — یہ سروس بالکل مفت ہے۔</p></div>
+      </div>
+      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
+        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
+          <span class="font-bold text-slate-800 urdu-text text-[15px]">کیا پرانے مہینوں کی <bdi>online payslip bannu</bdi> بھی مل سکتی ہے؟</span>
+          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
+        </button>
+        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">جی ہاں، مہینہ اور سال تبدیل کر کے پچھلے مہینوں کی <b>online payslip bannu</b> بھی دیکھی جا سکتی ہے (دستیاب ریکارڈ کے مطابق)۔</p></div>
+      </div>
+      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
+        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
+          <span class="font-bold text-slate-800 urdu-text text-[15px]">کیا موبائل ایپ سے بھی <bdi>online payslip bannu</bdi> دیکھی جا سکتی ہے؟</span>
+          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
+        </button>
+        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">جی ہاں، اسی پیج پر &quot;ایپ ڈاؤن لوڈ کریں&quot; بٹن سے اینڈرائیڈ ایپ مفت ڈاؤن لوڈ کریں اور موبائل پر <b>online payslip bannu</b> دیکھیں۔</p></div>
+      </div>
+      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
+        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
+          <span class="font-bold text-slate-800 urdu-text text-[15px]"><bdi>online payslip bannu</bdi> تلاش کرنے میں مسئلہ ہو تو کیا کریں؟</span>
+          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
+        </button>
+        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">شناختی کارڈ نمبر بغیر ڈیش کے لکھیں اور نام درست سپیلنگ کے ساتھ درج کریں۔ مسئلہ برقرار رہے تو ہمارا واٹس ایپ چینل جوائن کر کے رابطہ کریں۔</p></div>
+      </div>
+      </div>
+    </section>
 
   </main>
 
@@ -1117,6 +1219,16 @@
         setTimeout(() => notification.remove(), 400);
       }, 5000);
     }
+  </script>
+  <script>
+    document.querySelectorAll('.faq-q').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var item = btn.closest('.faq-item');
+        var wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(function (i) { i.classList.remove('open'); });
+        if (!wasOpen) item.classList.add('open');
+      });
+    });
   </script>
 </body>
 </html>
