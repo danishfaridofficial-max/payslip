@@ -1,169 +1,214 @@
-<!DOCTYPE html>
-<html dir="rtl" lang="ur">
+<!doctype html>
+<html lang="ur" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="google-site-verification" content="nW6hpsebE5M8I7U0sr2B9jCowzjOsn254XaouMNGRuo" />
-  <meta name="description" content="Online Payslip Bannu – Check your monthly pay slip online. KPK employees can search salary slips by CNIC or personal number. Fast, secure and completely free.">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#0f766e" />
+  <link rel="icon" href="data:," />
   <title>Online Payslip Bannu</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Noto+Nastaliq+Urdu:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body, .urdu-text {
-      font-family: 'Noto Nastaliq Urdu', 'Inter', system-ui, -apple-system, sans-serif;
-      line-height: 2.2;
-    }
-    
-    .ltr-input {
-      direction: ltr !important;
-      text-align: left !important;
-      font-family: 'Inter', sans-serif !important;
-    }
-
-    .payslip-container {
-      max-width: 800px;
-      margin: 0 auto;
-      background-color: #ffffff;
-      padding: 24px;
-      border: 2px solid #cbd5e1;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-      height: auto !important;
-      overflow: visible !important;
-    }
-
-    .transition-all-custom {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* ===== Official Payslip Layout (matches District Accounts Office format) ===== */
-    .official-slip {
-      direction: ltr;
-      text-align: left;
-      font-family: 'Times New Roman', 'Noto Nastaliq Urdu', serif;
-      color: #000000;
-      font-size: 12.5px;
-      width: 100%;
-    }
-    .official-slip .slip-header {
-      text-align: center;
-      border-bottom: 2px solid #000;
-      padding-bottom: 8px;
-      margin-bottom: 10px;
-    }
-    .official-slip .slip-title { font-weight: 700; font-size: 15px; }
-    .official-slip .slip-subtitle { font-weight: 700; font-size: 13px; }
-    .official-slip .slip-month { font-weight: 700; font-size: 13px; margin-top: 2px; }
-
-    .official-slip .slip-section-title {
-      font-weight: 700;
-      margin: 10px 0 4px;
-      font-size: 12.5px;
-    }
-
-    .official-slip table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 4px;
-    }
-    .official-slip .slip-info-table td {
-      padding: 2px 6px;
-      vertical-align: top;
-    }
-    .official-slip .slip-info-table .lbl {
-      font-weight: 400;
-      white-space: nowrap;
-      color: #333;
-    }
-
-    .official-slip .slip-pay-table,
-    .official-slip .slip-loan-table {
-      border: 1px solid #000;
-    }
-    .official-slip .slip-pay-table th,
-    .official-slip .slip-loan-table th {
-      border: 1px solid #000;
-      background: #f1f5f9;
-      font-weight: 700;
-      padding: 4px 6px;
-      text-align: left;
-    }
-    .official-slip .slip-pay-table td,
-    .official-slip .slip-loan-table td {
-      border: 1px solid #000;
-      padding: 3px 6px;
-    }
-    .official-slip .ps-code { width: 8%; }
-    .official-slip .ps-label { width: 34%; }
-    .official-slip .ps-amount, .official-slip .slip-info-table .ps-amount { text-align: right; white-space: nowrap; }
-
-    .official-slip .slip-summary-table {
-      border: 2px solid #000;
-      margin: 8px 0;
-    }
-    .official-slip .slip-summary-table td {
-      padding: 6px;
-      font-size: 13px;
-    }
-
-    .official-slip .slip-footer {
-      margin-top: 14px;
-      padding-top: 6px;
-      border-top: 1px solid #999;
-      font-size: 10px;
-      font-style: italic;
-      color: #444;
-    }
-    .official-slip .slip-footer p { margin: 1px 0; }
-
-    /* ===== Scrolling News Ticker (temporary alert bar) ===== */
-    .ticker-bar {
-      background: #ecfdf5;
-      border-bottom: 2px solid #5eead4;
-      overflow: hidden;
-      white-space: nowrap;
-      height: 42px;
-      position: relative;
-    }
-    .ticker-text {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      color: #dc2626;
-      font-weight: 700;
-      font-size: 14px;
-      white-space: nowrap;
-      animation: scrollTickerLTR 25s linear infinite;
-      will-change: transform;
-    }
-    @keyframes scrollTickerLTR {
-      from { transform: translate(-100%, -50%); }
-      to   { transform: translate(100vw, -50%); }
-    }
-  
-    /* ===== Maintenance-style download panels (exact same style, scoped vars) ===== */
-    .mp-download {
-      --green-50: #f0fdf4;
-      --green-100: #dcfce7;
-      --green-600: #16a34a;
-      --teal-50: #f0fdfa;
-      --teal-500: #14b8a6;
+    :root {
+      color-scheme: light dark;
+      --page: #f0fdfa;
+      --page-soft: #ecfdf5;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
       --ink: #0f172a;
       --muted: #475569;
       --faint: #64748b;
       --line: #e2e8f0;
-      font-family: 'Noto Nastaliq Urdu', 'Inter', system-ui, sans-serif;
+      --teal-50: #f0fdfa;
+      --teal-100: #ccfbf1;
+      --teal-200: #99f6e4;
+      --teal-500: #14b8a6;
+      --teal-600: #0d9488;
+      --teal-700: #0f766e;
+      --teal-900: #134e4a;
+      --green-50: #f0fdf4;
+      --green-100: #dcfce7;
+      --green-600: #16a34a;
+      --green-700: #15803d;
+      --shadow: 0 26px 65px rgba(15, 118, 110, .14), 0 8px 24px rgba(15, 23, 42, .07);
+      --shadow-soft: 0 10px 28px rgba(15, 118, 110, .12);
     }
-.app-panel {
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page: #071c1a;
+        --page-soft: #0b2522;
+        --surface: #102522;
+        --surface-soft: #122d29;
+        --ink: #f8fafc;
+        --muted: #d1d5db;
+        --faint: #a7b5b3;
+        --line: #28504b;
+        --teal-50: #102d29;
+        --teal-100: #17423d;
+        --teal-200: #2dd4bf;
+        --teal-500: #2dd4bf;
+        --teal-600: #14b8a6;
+        --teal-700: #0d9488;
+        --teal-900: #ccfbf1;
+        --green-50: #0d2d1b;
+        --green-100: #184229;
+        --green-600: #22c55e;
+        --green-700: #16a34a;
+        --shadow: 0 26px 65px rgba(0, 0, 0, .34), 0 8px 24px rgba(0, 0, 0, .2);
+        --shadow-soft: 0 10px 28px rgba(0, 0, 0, .24);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 13% 12%, color-mix(in srgb, var(--teal-100) 74%, transparent) 0 9rem, transparent 9.1rem),
+        radial-gradient(circle at 90% 87%, color-mix(in srgb, var(--green-100) 74%, transparent) 0 12rem, transparent 12.1rem),
+        linear-gradient(145deg, var(--page) 0%, var(--page-soft) 100%);
+      color: var(--ink);
+      font-family: "Noto Nastaliq Urdu", serif;
+    }
+
+    .page {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+      position: relative;
+      isolation: isolate;
+    }
+
+    .page::before,
+    .page::after {
+      content: "";
+      position: fixed;
+      z-index: -1;
+      border: 1px solid color-mix(in srgb, var(--teal-500) 15%, transparent);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .page::before {
+      width: 19rem;
+      height: 19rem;
+      top: -11rem;
+      right: -6rem;
+    }
+
+    .page::after {
+      width: 14rem;
+      height: 14rem;
+      left: -7rem;
+      bottom: -7rem;
+    }
+
+    .maintenance-card {
+      width: min(100%, 720px);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .accent-bar {
+      height: 8px;
+      background: linear-gradient(90deg, var(--teal-700), var(--teal-500), var(--green-600));
+    }
+
+    .content {
+      padding: clamp(30px, 7vw, 60px);
+      text-align: center;
+    }
+
+    .service-mark {
+      width: 104px;
+      height: 104px;
+      margin: 0 auto 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 28px;
+      color: var(--teal-700);
+      background: linear-gradient(145deg, var(--teal-50), var(--teal-100));
+      border: 1px solid var(--teal-200);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+    }
+
+    .service-mark::after {
+      content: "";
+      position: absolute;
+      inset: -9px;
+      border: 1px dashed color-mix(in srgb, var(--teal-500) 42%, transparent);
+      border-radius: 34px;
+      animation: orbit 14s linear infinite;
+    }
+
+    .service-mark svg { width: 42px; height: 42px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    .status-line {
+      width: fit-content;
+      margin: 0 auto 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 14px;
+      border: 1px solid var(--teal-200);
+      border-radius: 999px;
+      background: var(--teal-50);
+      color: var(--teal-700);
+      font-family: "Inter", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal-500);
+      box-shadow: 0 0 0 5px color-mix(in srgb, var(--teal-500) 15%, transparent);
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--teal-900);
+      font-size: clamp(30px, 6vw, 45px);
+      line-height: 1.9;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+
+    .message {
+      max-width: 570px;
+      margin: 10px auto 0;
+      color: var(--muted);
+      font-size: clamp(17px, 3vw, 20px);
+      line-height: 2.15;
+      font-weight: 400;
+    }
+
+    .divider {
+      width: 54px;
+      height: 3px;
+      margin: 24px auto;
+      border-radius: 99px;
+      background: var(--teal-500);
+    }
+
+    .app-panel {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr) auto;
       gap: 18px;
@@ -174,7 +219,8 @@
       border-radius: 22px;
       text-align: right;
     }
-.android-icon {
+
+    .android-icon {
       width: 60px;
       height: 60px;
       display: grid;
@@ -186,23 +232,26 @@
       box-shadow: 0 8px 20px rgba(22, 163, 74, .13);
       flex: none;
     }
-.android-icon svg { width: 33px; height: 33px; fill: currentColor; }
-.app-copy strong {
+
+    .android-icon svg { width: 33px; height: 33px; fill: currentColor; }
+
+    .app-copy strong {
       display: block;
       color: var(--ink);
       font-size: 18px;
       line-height: 1.9;
       font-weight: 700;
     }
-.app-copy span {
+
+    .app-copy span {
       display: block;
       margin-top: -2px;
       color: var(--faint);
       font-size: 14px;
       line-height: 1.9;
     }
-.download-button {
-      text-decoration: none;
+
+    .download-button {
       min-height: 48px;
       display: inline-flex;
       align-items: center;
@@ -210,383 +259,100 @@
       gap: 9px;
       padding: 11px 18px;
       border: 0;
-      border-radius: 16px;
-      background: #0D9488;
+      border-radius: 14px;
+      background: var(--green-600);
       color: #fff;
       font-family: "Noto Nastaliq Urdu", serif;
       font-size: 14px;
       font-weight: 700;
       line-height: 1.8;
       white-space: nowrap;
-      box-shadow: 0 9px 20px rgba(13, 148, 136, .20);
+      box-shadow: 0 9px 20px rgba(22, 163, 74, .22);
     }
-.download-button:hover {
-      background: #0F766E;
-    }
-.divider {
-      width: 54px;
-      height: 3px;
-      margin: 24px auto;
-      border-radius: 99px;
-      background: var(--teal-500);
-    }
-/* ===== Android icon + Download button attractive (attention-grabbing) ===== */
-    .android-icon {
-      width: 76px;
-      height: 76px;
-      border-radius: 22px;
-      position: relative;
-      overflow: hidden;
-      color: #fff;
-      background: linear-gradient(135deg, #16a34a, #0d9488);
-      border: none;
-      animation: iconFloat 3.2s ease-in-out infinite;
-      box-shadow: 0 14px 30px rgba(22, 163, 74, .40), 0 0 0 6px rgba(22, 163, 74, .12);
-    }
-    .android-icon svg { width: 40px; height: 40px; fill: #fff; }
-    .android-icon::after {
-      content: ""; position: absolute; top: 0; bottom: 0;
-      width: 45%; left: -60%;
-      background: linear-gradient(105deg, transparent, rgba(255,255,255,.55), transparent);
-      transform: skewX(-20deg);
-      animation: iconShine 3.2s ease-in-out infinite;
-      pointer-events: none;
-    }
-    @keyframes iconFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-    @keyframes iconShine { 0% { left: -60%; } 55%,100% { left: 130%; } }
 
-    .download-button {
-      position: relative;
-      overflow: hidden;
-      font-size: 16px;
-      padding: 13px 26px;
-      background: linear-gradient(135deg, #0d9488, #14b8a6);
-      animation: btnPulse 2.2s ease-in-out infinite;
+    .download-button:disabled {
+      cursor: not-allowed;
+      opacity: .68;
+      box-shadow: none;
     }
-    .download-button:hover { transform: translateY(-2px); }
-    .download-button svg { animation: arrowBounce 1.4s ease-in-out infinite; }
-    .download-button::after {
-      content: ""; position: absolute; top: 0; bottom: 0;
-      width: 40%; left: -50%;
-      background: linear-gradient(105deg, transparent, rgba(255,255,255,.5), transparent);
-      transform: skewX(-20deg);
-      animation: btnShine 2.6s ease-in-out infinite;
-      pointer-events: none;
-    }
-    @keyframes btnPulse {
-      0%,100% { box-shadow: 0 9px 20px rgba(13,148,136,.20), 0 0 0 0 rgba(20,184,166,.45); }
-      50% { box-shadow: 0 9px 26px rgba(13,148,136,.35), 0 0 0 12px rgba(20,184,166,0); }
-    }
-    @keyframes btnShine { 0% { left: -50%; } 60%,100% { left: 130%; } }
-    @keyframes arrowBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
 
-    .app-panel {
-      border: 2px solid var(--teal-500);
-      animation: panelGlow 2.6s ease-in-out infinite;
+    .availability-note {
+      margin: 15px 0 0;
+      color: var(--faint);
+      font-size: 13px;
+      line-height: 1.9;
     }
-    @keyframes panelGlow {
-      0%,100% { box-shadow: 0 0 0 0 rgba(20,184,166,0); }
-      50% { box-shadow: 0 0 34px rgba(20,184,166,.28); }
+
+    .availability-note svg {
+      margin-left: 5px;
+      color: var(--teal-600);
+      vertical-align: -3px;
     }
+
+    @keyframes orbit { to { transform: rotate(360deg); } }
 
     @media (prefers-reduced-motion: reduce) {
-      .android-icon, .android-icon::after,
-      .download-button, .download-button svg, .download-button::after,
-      .app-panel { animation: none; }
+      .service-mark::after { animation: none; }
     }
 
-
-    
-/* ===== WhatsApp channel panel ===== */
-    .wa-panel {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-      gap: 18px;
-      align-items: center;
-      padding: 20px;
-      background: linear-gradient(135deg, var(--green-50), #f0fdf4);
-      border: 1px solid var(--green-100);
-      border-radius: 22px;
-      text-align: right;
-    }
-    @media (prefers-color-scheme: dark) {
-      .wa-panel { background: linear-gradient(135deg, #0c2417, #0d2b1a); border-color: #14532d; }
-    }
-    .wa-icon {
-      width: 64px; height: 64px;
-      display: grid; place-items: center;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      box-shadow: 0 10px 24px rgba(22, 163, 74, .35);
-      flex: none;
-    }
-    .wa-icon svg { width: 34px; height: 34px; fill: #fff; }
-    .wa-copy strong {
-      display: block; color: var(--ink);
-      font-size: 17px; font-weight: 700; line-height: 2;
-    }
-    .wa-copy span { font-size: 13px; color: var(--muted); line-height: 2.1; }
-    .wa-button {
-      text-decoration: none;
-      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-      padding: 12px 24px; min-height: 48px;
-      border: 0; border-radius: 16px;
-      background: linear-gradient(135deg, #16a34a, #22c55e);
-      color: #fff;
-      font-family: "Noto Nastaliq Urdu", serif;
-      font-size: 15px; font-weight: 700; line-height: 1.8;
-      white-space: nowrap;
-      box-shadow: 0 9px 20px rgba(22, 163, 74, .30);
-      transition: transform .18s ease, box-shadow .18s ease;
-      position: relative; overflow: hidden;
-    }
-    .wa-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 26px rgba(22, 163, 74, .42);
-    }
-    .wa-button svg { width: 20px; height: 20px; fill: #fff; flex: none; }
-    .wa-button::after {
-      content: ""; position: absolute; top: 0; bottom: 0;
-      width: 40%; left: -50%;
-      background: linear-gradient(105deg, transparent, rgba(255,255,255,.45), transparent);
-      transform: skewX(-20deg);
-      animation: btnShine 3s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    /* WhatsApp button: Android download button jaisi pulse glow + bouncing icon */
-    .wa-button { animation: btnPulseGreen 2.2s ease-in-out infinite; }
-    .wa-button svg { animation: arrowBounce 1.4s ease-in-out infinite; }
-    @keyframes btnPulseGreen {
-      0%,100% { box-shadow: 0 9px 20px rgba(22,163,74,.30), 0 0 0 0 rgba(34,197,94,.45); }
-      50% { box-shadow: 0 9px 26px rgba(22,163,74,.42), 0 0 0 12px rgba(34,197,94,0); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .wa-button, .wa-button svg, .wa-button::after { animation: none; }
-    }
-    @media (max-width: 520px) {
-      .wa-panel { grid-template-columns: auto 1fr; }
-      .wa-button { grid-column: 1 / -1; width: 100%; }
-    }
-
-
-    
-/* ===== Mobile fix: icon grid column (56px) ke barabar rahe, text par na aaye ===== */
     @media (max-width: 620px) {
+      .page { padding-inline: 14px; }
+      .maintenance-card { border-radius: 24px; }
+      .content { padding: 34px 20px 26px; }
+
+      .service-mark {
+        width: 86px;
+        height: 86px;
+        border-radius: 24px;
+        margin-bottom: 20px;
+      }
+
+      .service-mark::after { border-radius: 29px; }
+      .service-mark svg { width: 35px; height: 35px; }
+      h1 { font-size: clamp(27px, 8vw, 35px); }
+      .message { font-size: 16px; }
+
+      .app-panel {
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 14px;
+        padding: 18px;
+      }
+
       .android-icon {
         width: 56px;
         height: 56px;
         border-radius: 16px;
       }
-      .android-icon svg { width: 30px; height: 30px; }
-    }
 
-
-
-    /* ===== FAQ accordion — UI same as page ===== */
-    .faq-a { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
-    .faq-item.open .faq-a { max-height: 500px; }
-    .faq-item.open .faq-arrow { transform: rotate(180deg); }
-    .faq-arrow { transition: transform .3s ease; }
-    .faq-item.open { border-color: #16a34a; }
-  
-    /* ===== Mobile fix: app-panel stacks like the maintenance page (620px) ===== */
-    @media (max-width: 620px) {
-      .app-panel { grid-template-columns: 56px minmax(0, 1fr); gap: 14px; padding: 18px; }
-      .download-button { grid-column: 1 / -1; width: 100%; }
+      .download-button {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
     }
   </style>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "بنوں میں online payslip bannu کیسے چیک کریں؟",
-        "acceptedAnswer": { "@type": "Answer", "text": "اپنا ضلع (بنوں)، مہینہ اور سال منتخب کریں، پھر اپنا شناختی کارڈ نمبر یا پرسنل نمبر لکھ کر تلاش دبائیں — آپ کی online payslip bannu فوراً ظاہر ہو جائے گی۔" }
-      },
-      {
-        "@type": "Question",
-        "name": "کیا online payslip bannu ڈاؤن لوڈ ہو سکتی ہے؟",
-        "acceptedAnswer": { "@type": "Answer", "text": "جی ہاں — online payslip bannu ظاہر ہونے کے بعد اسے ڈاؤن لوڈ یا پرنٹ بھی کر سکتے ہیں۔" }
-      },
-      {
-        "@type": "Question",
-        "name": "online payslip bannu چیک کرنے کے لیے کیا ضروری ہے؟",
-        "acceptedAnswer": { "@type": "Answer", "text": "صرف آپ کا شناختی کارڈ نمبر یا پرسنل نمبر درکار ہے۔ کسی اکاؤنٹ یا رجسٹریشن کی ضرورت نہیں — یہ سروس بالکل مفت ہے۔" }
-      },
-      {
-        "@type": "Question",
-        "name": "کیا پرانے مہینوں کی online payslip bannu بھی مل سکتی ہے؟",
-        "acceptedAnswer": { "@type": "Answer", "text": "جی ہاں، مہینہ اور سال تبدیل کر کے پچھلے مہینوں کی online payslip bannu بھی دیکھی جا سکتی ہے (دستیاب ریکارڈ کے مطابق)۔" }
-      },
-      {
-        "@type": "Question",
-        "name": "کیا موبائل ایپ سے بھی online payslip bannu دیکھی جا سکتی ہے؟",
-        "acceptedAnswer": { "@type": "Answer", "text": "جی ہاں، اسی پیج پر ایپ ڈاؤن لوڈ کریں بٹن سے اینڈرائیڈ ایپ مفت ڈاؤن لوڈ کریں اور موبائل پر online payslip bannu دیکھیں۔" }
-      },
-      {
-        "@type": "Question",
-        "name": "online payslip bannu تلاش کرنے میں مسئلہ ہو تو کیا کریں؟",
-        "acceptedAnswer": { "@type": "Answer", "text": "شناختی کارڈ نمبر بغیر ڈیش کے لکھیں اور نام درست سپیلنگ کے ساتھ درج کریں۔ مسئلہ برقرار رہے تو ہمارا واٹس ایپ چینل جوائن کر کے رابطہ کریں۔" }
-      }
-    ]
-  }
-  </script>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col justify-between text-slate-800">
-
-  <header class="bg-gradient-to-r from-emerald-700 via-teal-700 to-cyan-800 text-white shadow-lg border-b border-teal-600">
-    <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-4">
-        <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
-          <i class="fa-solid fa-file-invoice-dollar text-3xl text-emerald-300"></i>
-        </div>
-        <div>
-          <h1 class="text-1xl sm:text-3xl font-bold urdu-text tracking-wide">پے سلپ آن لائن پورٹل</h1>
-          <p class="text-xs sm:text-sm text-teal-100 opacity-90 mt-1">ڈیجیٹل سروسز برائے سرکاری ملازمین</p>
-        </div>
-      </div>
-      <div class="text-right sm:text-left text-xs text-emerald-100 opacity-75">
-        <div class="ltr-input"><i class="fa-regular fa-calendar-days ml-1"></i> <span id="currentDate"></span></div>
-      </div>
-    </div>
-  </header>
-
-  <!-- 🔴 Temporary Scrolling News Ticker — remove this block once August payslip data is uploaded -->
-  <div class="ticker-bar">
-    <div class="ticker-text urdu-text">
-🎉 مبارک ہو! ستمبر کے پے سلپس اپلوڈ کر دیے گئے ہیں، جن ملازمین نے ابھی تک ہمارا واٹس ایپ چینل جوائن نہیں کیا، وہ جلد از جلد جوائن کر لیں۔
-
-    </div>
-  </div>
-
-  <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-8">
-    
-    <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-6 sm:p-8 mb-8 relative overflow-hidden">
-      <div class="absolute -right-16 -top-16 w-36 h-36 bg-teal-50 rounded-full -z-10"></div>
-      <div class="absolute -left-16 -bottom-16 w-48 h-48 bg-emerald-50 rounded-full -z-10"></div>
-
-      <h2 class="text-xl sm:text-2xl font-bold text-teal-900 mb-4 urdu-text">اپنا ضلع منتخب کریں اور پے سلپ تلاش کریں</h2>
-      <p class="text-slate-600 text-sm mb-6 leading-relaxed">
-        اپنی مطلوبہ پے سلپ تلاش کرنے کے لیے نیچے دیے گئے فارم سے متعلقہ ضلع، کیٹیگری، مہینہ، سال کا انتخاب کریں اور بغیر ڈیش کے نمبر درج کریں۔
-      </p>
-
-      <form id="searchForm" class="space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-
-          <div class="flex flex-col">
-            <label for="districtSelector" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
-              <i class="fa-solid fa-map-location-dot text-teal-600 ml-2"></i> اپنا ضلع منتخب کریں:
-            </label>
-            <div class="relative">
-              <select id="districtSelector" required class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom appearance-none cursor-pointer text-sm">
-                <!-- Default shown immediately on page load; JS confirms/updates this once the backend responds -->
-                <option value="Bannu">Bannu</option>
-              </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                <i class="fa-solid fa-chevron-down text-xs"></i>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col">
-            <label for="categorySelector" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
-              <i class="fa-solid fa-layer-group text-teal-600 ml-2"></i> کیٹیگری:
-            </label>
-            <div class="relative">
-              <select id="categorySelector" required class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom appearance-none cursor-pointer text-sm">
-                <option value="District">District</option>
-                <option value="Federal">Federal</option>
-                <option value="Provincial">Provincial</option>
-              </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                <i class="fa-solid fa-chevron-down text-xs"></i>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col">
-            <label for="monthSelector" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
-              <i class="fa-solid fa-calendar-minus text-teal-600 ml-2"></i>مہینہ منتخب کریں:
-            </label>
-            <div class="relative">
-              <select id="monthSelector" required class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom appearance-none cursor-pointer text-sm">
-                <option value="Jan">Jan</option>
-                <option value="Feb">Feb</option>
-                <option value="Mar">Mar</option>
-                <option value="Apr">Apr</option>
-                <option value="May">May</option>
-                <option value="Jun">Jun</option>
-                <option value="Jul">Jul</option>
-                <option value="Aug">Aug</option>
-                <option value="Sep" selected>Sep</option>
-                <option value="Oct">Oct</option>
-                <option value="Nov">Nov</option>
-                <option value="Dec">Dec</option>
-              </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                <i class="fa-solid fa-chevron-down text-xs"></i>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col">
-            <label for="yearSelector" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
-              <i class="fa-solid fa-calendar-days text-teal-600 ml-2"></i>سال منتخب کریں:
-            </label>
-            <div class="relative">
-              <select id="yearSelector" required class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom appearance-none cursor-pointer text-sm">
-                <option value="2026" selected>2026</option>
-              </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                <i class="fa-solid fa-chevron-down text-xs"></i>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-col">
-            <label for="searchQuery" class="font-semibold text-slate-700 mb-2 urdu-text text-sm">
-              <i class="fa-solid fa-address-card text-teal-600 ml-2"></i>شناختی کارڈ نمبر درج کریں:
-            </label>
-            <div class="relative">
-              <input type="text" id="searchQuery" required placeholder="نمبر درج کریں..." class="w-full ltr-input bg-slate-50 border-2 border-slate-200 focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 rounded-2xl px-3 py-3.5 text-slate-700 outline-none transition-all-custom text-sm placeholder-slate-400">
-              <div class="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                <i class="fa-solid fa-fingerprint text-xs"></i>
-              </div>
-            </div>
-          </div>
-
+<body>
+  <main class="page">
+    <section class="maintenance-card" aria-labelledby="maintenance-title">
+      <div class="accent-bar" aria-hidden="true"></div>
+      <div class="content">
+        <div class="service-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img">
+            <path d="M14.8 6.2a4.2 4.2 0 0 0-5.1-5.1l2.5 2.5-2.7 2.7L7 3.8a4.2 4.2 0 0 0 5.1 5.1L20 16.8a2.3 2.3 0 1 1-3.2 3.2l-7.9-7.9a4.2 4.2 0 0 1-5.1-5.1l2.5 2.5 2.7-2.7-2.5-2.5"/>
+            <path d="m13.7 13.7-2 2M5.7 18.3l-2 2a1.4 1.4 0 0 1-2-2l2-2"/>
+          </svg>
         </div>
 
-        <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
-          <button type="button" id="resetBtn" class="w-full sm:w-auto px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl font-bold urdu-text text-sm transition-all-custom flex items-center justify-center gap-2">
-            <i class="fa-solid fa-rotate-right text-xs"></i> صاف کریں
-          </button>
-          <button type="submit" id="searchBtn" class="w-full sm:w-64 px-6 py-3.5 bg-teal-600 hover:bg-teal-700 text-white rounded-2xl font-bold urdu-text text-sm shadow-md shadow-teal-600/20 transition-all-custom flex items-center justify-center gap-2">
-            <i class="fa-solid fa-magnifying-glass"></i> تلاش کریں
-          </button>
+        <div class="status-line" dir="ltr">
+          <span class="status-dot"></span>
+          Maintenance in progress
         </div>
-      </form>
-    </div>
 
-
-    <!-- WhatsApp Channel Banner (maintenance-style) + App Download Panel -->
-    <div class="mp-download mb-6">
-        <div class="wa-panel">
-          <div class="wa-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" role="img"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          </div>
-          <div class="wa-copy">
-            <strong id="bannerHeading">اہم اپڈیٹ: ہمارا واٹس ایپ چینل جوائن کریں!</strong>
-            <span id="bannerText">خیبر ایلیمنٹری اینڈ سیکنڈری ایجوکیشن کی تازہ ترین خبروں، نوٹیفیکیشنز اور تبادلوں کی اپڈیٹس کے لیے ابھی ہمارا آفیشل واٹس ایپ چینل جوائن کریں۔</span>
-          </div>
-          <a id="bannerLink" class="wa-button" href="https://whatsapp.com/channel/0029VaCK4y0EquiKbkl09S1A" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            <span>چینل جوائن کریں</span>
-          </a>
-        </div>
+        <h1 id="maintenance-title">ویب سائٹ پر کام جاری ہے</h1>
+        <p class="message">
+          ہم ویب سائٹ کو مزید بہتر بنا رہے ہیں، اس لیے آپ فی الحال اسے استعمال نہیں کر سکتے۔
+          اس دوران اپنی پے سلپ دیکھنے کے لیے ہماری اینڈرائیڈ ایپ استعمال کریں۔
+        </p>
 
         <div class="divider" aria-hidden="true"></div>
 
@@ -600,635 +366,18 @@
             <strong>آن لائن پے سلپ ایپ</strong>
             <span>اپنی پے سلپ موبائل پر آسانی سے دیکھیں</span>
           </div>
-          <!-- Direct download link (backup, may expire): https://download2295.mediafire.com/szleg8ybsxggVPhmNh29_pFXd7LupglIy_hjX2pxxNNtWMQo1K7jBAn8YTYYha_m-ubKYRoOvfY-8P5SbX61Hzo95uZoQktyvgrMuf72j1v1G38HvDQYO9l3XIy71FAK8T9wuUGFFsReP5OLuI0ePQhoVp3ln_GLX-kfSiGMono0/bnuoplfyxth1adi/online+payslip+V1.0.apk -->
-          <a class="download-button" href="https://www.mediafire.com/file/bnuoplfyxth1adi/online_payslip_V1.0.apk/file" target="_blank" rel="noopener">
+          <button class="download-button" type="button" disabled aria-disabled="true" title="ڈاؤن لوڈ لنک دستیاب نہیں">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14"/></svg>
-            <span>ایپ ڈاؤن لوڈ کریں</span>
-          </a>
+            <span>جلد دستیاب</span>
+          </button>
         </div>
-    </div>
 
-    <div class="bg-teal-50/50 rounded-2xl border border-teal-100 p-5 flex gap-4 items-start mb-6">
-      <div class="text-teal-600 mt-1">
-        <i class="fa-solid fa-shield-halved text-xl"></i>
-      </div>
-      <div class="text-xs sm:text-sm text-slate-600">
-        <h4 class="font-bold text-teal-900 urdu-text mb-1 text-sm">حفاظتی ہدایات</h4>
-        <p class="leading-relaxed">یہ پورٹل ڈیٹا بیس کی تلاش کے لیے محفوظ ترین اصولوں کا استعمال کرتا ہے۔ کسی بھی تکنیکی یا ملازم کے ڈیٹا میں غلطی کی صورت میں اپنے ڈسٹرکٹ آفس/اکاؤنٹس برانچ سے فوری رابطہ کریں۔</p>
-      </div>
-    </div>
-
-    <div class="relative mx-auto mt-4 sm:fixed sm:bottom-6 sm:left-6 sm:mx-0 sm:mt-0 z-40 bg-white border border-slate-200/80 shadow-lg sm:shadow-2xl rounded-2xl p-4 max-w-full sm:w-64 flex flex-col gap-2 transition-all duration-500 hover:scale-105 border-r-4 border-r-teal-600" id="onlineCounterWidget">
-      
-      <div class="flex items-center gap-3 border-b border-slate-100 pb-2">
-        <div class="relative flex h-8 w-8 items-center justify-center shrink-0">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-20"></span>
-          <span class="animate-pulse absolute inline-flex h-6 w-6 rounded-full bg-teal-50"></span>
-          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-teal-600"></span>
-        </div>
-        <div class="text-left" style="direction: ltr !important; text-align: left !important; font-family: 'Inter', sans-serif;">
-          <p class="text-xs font-semibold text-slate-700 leading-none">
-            <span id="onlineCount" class="text-teal-600 font-bold text-sm tracking-wide">1</span> Employee(s) Online
-          </p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-3 pt-0.5">
-        <div class="bg-slate-100 h-8 w-8 rounded-full flex items-center justify-center text-slate-500 shrink-0">
-          <i class="fa-solid fa-users text-xs"></i>
-        </div>
-        <div class="text-left" style="direction: ltr !important; text-align: left !important; font-family: 'Inter', sans-serif;">
-          <p class="text-xs font-semibold text-slate-600 leading-none">
-            Total Visits: <span id="totalVisitorCount" class="text-slate-900 font-bold text-sm tracking-wide">0</span>
-          </p>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- FAQs — SEO (UI same as page) -->
-    <section class="mt-12" aria-label="اکثر پوچھے گئے سوالات">
-      <h2 class="text-xl sm:text-2xl font-bold text-teal-900 mb-2 urdu-text">اکثر پوچھے گئے سوالات</h2>
-      <p class="text-slate-500 text-sm urdu-text mb-6"><bdi>online payslip bannu</bdi> سے متعلق عام سوالات کے جوابات</p>
-      <div class="space-y-3" id="faqList">
-      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
-        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
-          <span class="font-bold text-slate-800 urdu-text text-[15px]">بنوں میں <bdi>online payslip bannu</bdi> کیسے چیک کریں؟</span>
-          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
-        </button>
-        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">اپنا ضلع (بنوں)، مہینہ اور سال منتخب کریں، پھر اپنا شناختی کارڈ نمبر یا پرسنل نمبر لکھ کر تلاش دبائیں — آپ کی <b>online payslip bannu</b> فوراً ظاہر ہو جائے گی۔</p></div>
-      </div>
-      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
-        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
-          <span class="font-bold text-slate-800 urdu-text text-[15px]">کیا <bdi>online payslip bannu</bdi> ڈاؤن لوڈ ہو سکتی ہے؟</span>
-          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
-        </button>
-        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">جی ہاں — <b>online payslip bannu</b> ظاہر ہونے کے بعد اسے ڈاؤن لوڈ یا پرنٹ بھی کر سکتے ہیں۔</p></div>
-      </div>
-      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
-        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
-          <span class="font-bold text-slate-800 urdu-text text-[15px]"><bdi>online payslip bannu</bdi> چیک کرنے کے لیے کیا ضروری ہے؟</span>
-          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
-        </button>
-        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">صرف آپ کا شناختی کارڈ نمبر یا پرسنل نمبر درکار ہے۔ کسی اکاؤنٹ یا رجسٹریشن کی ضرورت نہیں — یہ سروس بالکل مفت ہے۔</p></div>
-      </div>
-      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
-        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
-          <span class="font-bold text-slate-800 urdu-text text-[15px]">کیا پرانے مہینوں کی <bdi>online payslip bannu</bdi> بھی مل سکتی ہے؟</span>
-          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
-        </button>
-        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">جی ہاں، مہینہ اور سال تبدیل کر کے پچھلے مہینوں کی <b>online payslip bannu</b> بھی دیکھی جا سکتی ہے (دستیاب ریکارڈ کے مطابق)۔</p></div>
-      </div>
-      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
-        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
-          <span class="font-bold text-slate-800 urdu-text text-[15px]">کیا موبائل ایپ سے بھی <bdi>online payslip bannu</bdi> دیکھی جا سکتی ہے؟</span>
-          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
-        </button>
-        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">جی ہاں، اسی پیج پر &quot;ایپ ڈاؤن لوڈ کریں&quot; بٹن سے اینڈرائیڈ ایپ مفت ڈاؤن لوڈ کریں اور موبائل پر <b>online payslip bannu</b> دیکھیں۔</p></div>
-      </div>
-      <div class="faq-item bg-white border border-slate-200 rounded-2xl shadow-sm transition-colors">
-        <button type="button" class="faq-q w-full flex items-center justify-between gap-3 text-right p-5">
-          <span class="font-bold text-slate-800 urdu-text text-[15px]"><bdi>online payslip bannu</bdi> تلاش کرنے میں مسئلہ ہو تو کیا کریں؟</span>
-          <i class="faq-arrow fa-solid fa-chevron-down text-green-600 text-sm shrink-0"></i>
-        </button>
-        <div class="faq-a px-5"><p class="pb-5 text-green-800 urdu-text text-sm">شناختی کارڈ نمبر بغیر ڈیش کے لکھیں اور نام درست سپیلنگ کے ساتھ درج کریں۔ مسئلہ برقرار رہے تو ہمارا واٹس ایپ چینل جوائن کر کے رابطہ کریں۔</p></div>
-      </div>
+        <p class="availability-note">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          اینڈرائیڈ ایپ کا ڈاؤن لوڈ لنک جلد یہاں دستیاب ہوگا۔
+        </p>
       </div>
     </section>
-
   </main>
-
-  <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex flex-col items-center justify-center text-white hidden">
-    <div class="relative flex items-center justify-center">
-      <div class="animate-spin rounded-full h-20 w-20 border-4 border-teal-500 border-t-transparent"></div>
-      <i class="fa-solid fa-circle-notch animate-ping text-xl text-teal-300 absolute"></i>
-    </div>
-    <p id="loadingMessage" class="mt-6 font-bold text-sm sm:text-lg urdu-text tracking-wide text-teal-100 animate-pulse">براہ کرم انتظار کریں...</p>
-  </div>
-
-  <div id="payslipModal" class="fixed inset-0 z-40 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
-
-    <div class="flex min-h-screen items-center justify-center p-4">
-      <div class="relative bg-white rounded-3xl shadow-2xl max-w-4xl w-full overflow-hidden transform transition-all border border-slate-200">
-        
-        <div class="bg-slate-100 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-teal-500 text-white text-xs">
-              <i class="fa-solid fa-check"></i>
-            </span>
-            <h3 class="font-bold text-slate-800 urdu-text text-base sm:text-lg">پے سلپ کامیابی سے مل گئی ہے</h3>
-          </div>
-          <button type="button" onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
-            <i class="fa-solid fa-xmark text-xl"></i>
-          </button>
-        </div>
-
-        <div id="payslipScroll" class="p-3 sm:p-6 overflow-x-auto overflow-y-auto max-h-[45vh] sm:max-h-[70vh]" style="direction:ltr;">
-          <div id="payslipBody" class="payslip-container p-6 border border-slate-300 rounded shadow-sm bg-white min-w-[700px]">
-          </div>
-        </div>
-
-        <div class="bg-slate-50 border-t border-slate-100 px-4 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-          <span class="text-xs text-slate-500 font-medium">
-            <i class="fa-solid fa-circle-info ml-1 text-slate-400"></i>
-            محفوظ پی ڈی ایف پرنٹ یا ڈاؤن لوڈ کرنے کے لیے بٹن دبائیں۔
-          </span>
-          <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-            <button type="button" onclick="closeModal()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-xs sm:text-sm urdu-text transition-colors w-full sm:w-auto">
-              بند کریں
-            </button>
-            <button type="button" id="downloadPdfBtn" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs sm:text-sm urdu-text shadow-md shadow-emerald-600/10 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
-              <i class="fa-solid fa-file-pdf"></i> ڈاؤن لوڈ PDF
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- 🌟 NEW DYNAMIC WHATSAPP POPUP MODAL (COLUMN H SE SHOW/HIDE HOGA) -->
-  <div id="whatsappPopupModal" class="fixed inset-0 z-50 overflow-y-auto hidden">
-    <div class="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity" onclick="closeWhatsappPopup()"></div>
-    <div class="flex min-h-screen items-center justify-center p-4">
-      <div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6 text-center animate-bounce-short">
-        <div class="bg-green-500 text-white p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg shadow-green-500/30">
-          <i class="fa-brands fa-whatsapp text-3xl"></i>
-        </div>
-        <h3 id="popupHeading" class="font-bold text-slate-900 urdu-text text-lg mb-2">اہم اپڈیٹ: ہمارا واٹس ایپ چینل جوائن کریں!</h3>
-        <p id="popupText" class="text-sm text-slate-600 urdu-text leading-relaxed mb-6">خیبر ایلیمنٹری اینڈ سیکنڈری ایجوکیشن کی تازہ ترین خبروں کے لیے ابھی ہمارا آفیشل واٹس ایپ چینل جوائن کریں۔</p>
-        <div class="flex flex-col gap-2">
-          <a id="popupLink" href="https://whatsapp.com/channel/0029VaCK4y0EquiKbkl09S1A" target="_blank" rel="noopener noreferrer" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold urdu-text text-sm py-3.5 rounded-2xl shadow-lg shadow-green-600/20 transition-all-custom flex items-center justify-center gap-2">
-            <i class="fa-solid fa-bell text-xs"></i> ابھی جوائن کریں
-          </a>
-          <button type="button" onclick="closeWhatsappPopup()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl font-bold urdu-text text-sm transition-colors">
-            بعد میں کریں گے
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <footer class="bg-slate-950 text-slate-500 py-6 border-t border-slate-900 mt-12 text-center text-xs">
-    <p class="urdu-text mb-2">محفوظ ڈیجیٹل سروسز - پے سلپ سسٹم © 2026</p>
-    <p class="text-[11px] opacity-70 tracking-wide font-sans" style="direction: ltr !important; text-align: center !important;">
-      © 2026 Babar Ali. All Rights Reserved | System v3.2
-    </p>
-  </footer>
-
-  <script>
-    const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', dateOpts);
-
-    // ===== APNA GOOGLE APPS SCRIPT WEB APP URL YAHAN DALEIN =====
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCsuhGCUK5udkwRy-s6nxTVbAupICjOOm2KL9KdTEaEFx-9UaR8eqrG4s681yuOXk-6g/exec";
-
-    // ===== Districts shown in the dropdown =====
-    // Only districts returned by the backend (action=districts) as "Active" will be enabled.
-    // The other one shows up as disabled "(جلد آرہا ہے)" / Coming Soon.
-    const ALL_KP_DISTRICTS = ["Bannu", "Lakki Marwat"];
-
-    // Global variables to hold live data
-    let myLiveUserId = localStorage.getItem('paySlipCounterUserId') || "";
-    let globalPopupStatus = "Show";
-    let globalPopupHeading = "";
-    let globalPopupText = "";
-    let globalPopupLink = "";
-
-    function fetchRealLiveTraffic() {
-      fetch(`${WEB_APP_URL}?action=traffic&userId=${encodeURIComponent(myLiveUserId)}`)
-        .then(res => res.json())
-        .then(res => {
-          if (res && res.success) {
-            if (!myLiveUserId && res.userId) {
-              myLiveUserId = res.userId;
-              localStorage.setItem('paySlipCounterUserId', res.userId);
-            }
-            document.getElementById('onlineCount').innerText = res.liveCount;
-            document.getElementById('totalVisitorCount').innerText = res.totalCount.toLocaleString();
-          }
-        })
-        .catch(err => console.error("Counter sync failed: ", err));
-    }
-
-    // Dynamic WhatsApp Banner & Popup Fetching Logic with Intelligent Fallbacks
-    function fetchWhatsAppBannerDetails() {
-      fetch(`${WEB_APP_URL}?action=banner`)
-        .then(res => res.json())
-        .then(res => {
-          if (res && res.success) {
-
-            // 1. Home Page Banner Data (Columns E, F, G)
-            if (res.bannerHeading && res.bannerHeading.trim() !== "") {
-              document.getElementById('bannerHeading').innerText = res.bannerHeading;
-            }
-            if (res.bannerText && res.bannerText.trim() !== "") {
-              document.getElementById('bannerText').innerText = res.bannerText;
-            }
-            if (res.bannerLink && res.bannerLink.trim() !== "") {
-              document.getElementById('bannerLink').href = res.bannerLink;
-            }
-
-            // 2. Popup Active Trigger Status (Column H)
-            if (res.popupStatus) {
-              globalPopupStatus = res.popupStatus.trim().toLowerCase();
-            }
-
-            // 3. Popup Heading Fallback Logic (Column I -> Banner Heading)
-            globalPopupHeading = (res.popupHeading && res.popupHeading.trim() !== "")
-              ? res.popupHeading
-              : document.getElementById('bannerHeading').innerText;
-
-            // 4. Popup Description Fallback Logic (Column J -> Banner Text)
-            globalPopupText = (res.popupText && res.popupText.trim() !== "")
-              ? res.popupText
-              : document.getElementById('bannerText').innerText;
-
-            // 5. Popup URL Fallback Logic (Column K -> Banner Link)
-            globalPopupLink = (res.popupLink && res.popupLink.trim() !== "")
-              ? res.popupLink
-              : (res.bannerLink && res.bannerLink.trim() !== "" ? res.bannerLink : document.getElementById('bannerLink').href);
-          }
-        })
-        .catch(err => console.error("Failed to load live WhatsApp banner data: ", err));
-    }
-
-    // Populates the District dropdown: enabled options for districts with real data,
-    // disabled "Coming Soon" options for everything else.
-    function populateDistrictDropdown(availableDistricts) {
-      const select = document.getElementById('districtSelector');
-      select.innerHTML = "";
-
-      const availableLower = (availableDistricts || []).map(d => d.toLowerCase());
-
-      ALL_KP_DISTRICTS.forEach(district => {
-        const isAvailable = availableLower.includes(district.toLowerCase());
-        const opt = document.createElement('option');
-        opt.value = district;
-        opt.textContent = isAvailable ? district : `${district} (جلد آرہا ہے)`;
-        if (!isAvailable) {
-          opt.disabled = true;
-        }
-        select.appendChild(opt);
-      });
-
-      // Auto-select the first available district so the form has a valid default
-      const firstAvailable = ALL_KP_DISTRICTS.find(d => availableLower.includes(d.toLowerCase()));
-      if (firstAvailable) {
-        select.value = firstAvailable;
-      }
-    }
-
-    function fetchAvailableDistricts() {
-      fetch(`${WEB_APP_URL}?action=districts`)
-        .then(res => res.json())
-        .then(res => {
-          if (res && res.success) {
-            populateDistrictDropdown(res.districts);
-          } else {
-            populateDistrictDropdown(["Bannu"]); // safe fallback
-          }
-        })
-        .catch(err => {
-          console.error("Failed to load districts: ", err);
-          populateDistrictDropdown(["Bannu"]); // safe fallback if API call fails
-        });
-    }
-
-    // Initialize triggers on page load
-    if (WEB_APP_URL && WEB_APP_URL !== "PASTE_YOUR_DEPLOYED_WEB_APP_URL_HERE") {
-      fetchRealLiveTraffic();
-      fetchWhatsAppBannerDetails();
-      fetchAvailableDistricts();
-      setInterval(fetchRealLiveTraffic, 15000); // 15 seconds real-time update interval
-    } else {
-      console.warn("WEB_APP_URL abhi set nahi hui — Index.html ke top par apna Apps Script Web App URL dalein.");
-    }
-
-    function showLoading(msg) {
-      const loader = document.getElementById('loadingOverlay');
-      const text = document.getElementById('loadingMessage');
-      if (text && msg) text.innerText = msg;
-      loader.classList.remove('hidden');
-    }
-
-    function hideLoading() {
-      const loader = document.getElementById('loadingOverlay');
-      loader.classList.add('hidden');
-    }
-
-    document.getElementById('searchForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const selectedDistrict = document.getElementById('districtSelector').value;
-      const selectedCategory = document.getElementById('categorySelector').value;
-      const selectedMonth = document.getElementById('monthSelector').value;
-      const selectedYear = document.getElementById('yearSelector').value;
-      const queryInput = document.getElementById('searchQuery').value;
-      
-      const cleanQuery = queryInput.replace(/[-\s]/g, "");
-
-      if (!selectedDistrict) {
-        showNotification("براہ کرم ضلع منتخب کریں!", "warning");
-        return;
-      }
-
-      if (!selectedCategory || !selectedMonth || !selectedYear) {
-        showNotification("براہ کرم تمام ڈراپ ڈاؤنز منتخب کریں!", "warning");
-        return;
-      }
-      
-      if (!cleanQuery) {
-        showNotification("براہ کرم شناختی کارڈ یا پرسنل نمبر درج کریں!", "warning");
-        return;
-      }
-      
-      showLoading("پے سلپ تلاش کی جا رہی ہے، براہ کرم انتظار کریں...");
-
-      const targetUrl = `${WEB_APP_URL}?action=search&district=${encodeURIComponent(selectedDistrict)}&category=${encodeURIComponent(selectedCategory)}&month=${encodeURIComponent(selectedMonth)}&year=${encodeURIComponent(selectedYear)}&query=${encodeURIComponent(cleanQuery)}`;
-
-      fetch(targetUrl)
-        .then(response => response.json())
-        .then(handleSearchResult)
-        .catch(err => {
-          hideLoading();
-          showNotification("تکنیکی خرابی: " + err.message, "error");
-        });
-    });
-
-    document.getElementById('resetBtn').addEventListener('click', function() {
-      document.getElementById('searchForm').reset();
-      showNotification("فارم صاف کر دیا گیا ہے", "info");
-    });
-
-    function fmtAmount(val) {
-      if (val === undefined || val === null || val === "") return "";
-      const num = Number(val.toString().replace(/,/g, ""));
-      if (isNaN(num)) return val;
-      return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
-    function buildPairedRows(items) {
-      let rows = "";
-      for (let i = 0; i < items.length; i += 2) {
-        const left = items[i];
-        const right = items[i + 1];
-        rows += `<tr>
-          <td class="ps-code">${left ? left.code : ""}</td>
-          <td class="ps-label">${left ? left.label : ""}</td>
-          <td class="ps-amount">${left ? fmtAmount(left.amount) : ""}</td>
-          <td class="ps-code">${right ? right.code : ""}</td>
-          <td class="ps-label">${right ? right.label : ""}</td>
-          <td class="ps-amount">${right ? fmtAmount(right.amount) : ""}</td>
-        </tr>`;
-      }
-      return rows;
-    }
-
-    function generatePayslipHTML(data) {
-      const d = data || {};
-      const payRows = buildPairedRows(d.payItems || []);
-      const dedRows = buildPairedRows(d.deductions || []);
-
-      let loanRows = "";
-      (d.loans || []).forEach(l => {
-        loanRows += `<tr>
-          <td class="ps-loan-cell">${l.loanNo || ""}</td>
-          <td class="ps-loan-cell">${l.description || ""}</td>
-          <td class="ps-loan-cell ps-amount">${fmtAmount(l.principal)}</td>
-          <td class="ps-loan-cell ps-amount">${fmtAmount(l.deduction)}</td>
-          <td class="ps-loan-cell ps-amount">${fmtAmount(l.balance)}</td>
-        </tr>`;
-      });
-
-      return `
-      <div class="official-slip">
-        <div class="slip-header">
-          <div class="slip-header-text">
-            <div class="slip-title">${d.officeTitle || ""}</div>
-            <div class="slip-subtitle">${d.officeSubTitle || ""}</div>
-            <div class="slip-month">Monthly Salary Statement (${d.monthYear || ""})</div>
-          </div>
-        </div>
-
-        <div class="slip-section-title">Personal Information of ${d.name || ""}${d.guardianName ? " " + (d.guardianRelation || "d/w/s of") + " " + d.guardianName : ""}</div>
-
-<table class="slip-info-table">
-  <tr>
-    <td class="lbl">Personnel Number:</td>
-    <td>${d.personnelNo || ""}</td>
-
-    <td class="lbl">CNIC:</td>
-    <td colspan="3">${d.cnic || ""}</td>
-  </tr>
-
-  <tr>
-    <td class="lbl">Date of Birth:</td>
-    <td>${d.dob || ""}</td>
-
-    <td class="lbl">Length of Service:</td>
-    <td colspan="3">${d.lengthOfService || ""}</td>
-  </tr>
-</table>
-
-<div class="slip-section-title">Employment Category: ${d.employmentCategory || ""}</div>
-
-<table class="slip-info-table">
-  <tr>
-    <td class="lbl">Designation:</td>
-    <td colspan="3">${d.designation || ""}</td>
-    <td class="lbl">DDO:</td>
-    <td>${d.ddoTitle || ""}</td>
-  </tr>
-
-  <tr>
-    <td class="lbl">DDO Code:</td>
-    <td colspan="5">${d.ddoCode || ""}</td>
-  </tr>
-
-  <tr>
-    <td class="lbl">Payroll Section:</td>
-    <td>${d.payrollSection || ""}</td>
-
-    <td class="lbl">GPF Section:</td>
-    <td>${d.gpfSection || ""}</td>
-
-    <td></td>
-    <td></td>
-  </tr>
-
-  <tr>
-    <td class="lbl">GPF A/C No:</td>
-    <td>${d.gpfAccountNo || ""}</td>
-
-    <td class="lbl">GPF Interest:</td>
-    <td>${d.gpfInterestApplied || ""}</td>
-
-    <td class="lbl">GPF Balance:</td>
-    <td><b>${fmtAmount(d.gpfBalance)}</b></td>
-  </tr>
-</table>
-        
-
-        <div class="slip-section-title">Pay and Allowances: Pay scale: ${d.payScale || ""} &nbsp; Pay Scale Type: ${d.payScaleType || ""} &nbsp; BPS: ${d.bps || ""} &nbsp; Pay Stage: ${d.payStage || ""}</div>
-        <table class="slip-pay-table">
-          <thead><tr><th colspan="3">Wage type</th><th colspan="3">Wage type</th></tr></thead>
-          <tbody>${payRows}</tbody>
-        </table>
-
-        <div class="slip-section-title">Deductions - General</div>
-        <table class="slip-pay-table">
-          <tbody>${dedRows}</tbody>
-        </table>
-
-        ${(d.loans && d.loans.length) ? `
-        <div class="slip-section-title">Deductions - Loans and Advances</div>
-        <table class="slip-loan-table">
-          <thead><tr><th>Loan</th><th>Description</th><th>Principal</th><th>Deduction</th><th>Balance</th></tr></thead>
-          <tbody>${loanRows}</tbody>
-        </table>` : ""}
-
-        <div class="slip-section-title">Deductions - Income Tax</div>
-        <table class="slip-info-table">
-          <tr>
-            <td class="lbl">Payable:</td><td>${fmtAmount(d.incomeTax && d.incomeTax.payable)}</td>
-            <td class="lbl">Recovered:</td><td>${fmtAmount(d.incomeTax && d.incomeTax.recoveredTill)}</td>
-            <td class="lbl">Exempted:</td><td>${d.incomeTax ? d.incomeTax.exempted : ""}</td>
-            <td class="lbl">Recoverable:</td><td>${fmtAmount(d.incomeTax && d.incomeTax.recoverable)}</td>
-          </tr>
-        </table>
-
-        <table class="slip-summary-table">
-          <tr>
-            <td class="lbl">Gross Pay (Rs.):</td><td><b>${fmtAmount(d.grossPay)}</b></td>
-            <td class="lbl">Deductions (Rs.):</td><td><b>${fmtAmount(d.totalDeductions)}</b></td>
-            <td class="lbl">Net Pay (Rs.):</td><td><b>${fmtAmount(d.netPay)}</b></td>
-          </tr>
-        </table>
-
-        <table class="slip-info-table">
-          <tr><td class="lbl">Payee Name:</td><td colspan="5">${d.payeeName || ""}</td></tr>
-          <tr><td class="lbl">Account Number:</td><td colspan="5">${d.accountNo || ""}</td></tr>
-          <tr><td class="lbl">Bank Details:</td><td colspan="5">${d.bankDetails || ""}</td></tr>
-        </table>
-
-        <div class="slip-footer">
-          <p>${d.footerNote1 || "System generated document"}</p>
-          <p>* All amounts are in Pak Rupees</p>
-          <p>${d.footerNote2 || ""}</p>
-        </div>
-      </div>`;
-    }
-
-    function handleSearchResult(res) {
-      hideLoading();
-      if (!res.success) {
-        showNotification(res.message, "error");
-        return;
-      }
-
-      const payslipHTML = generatePayslipHTML(res.data);
-      document.getElementById('payslipBody').innerHTML = payslipHTML;
-      openModal();
-      
-      setTimeout(() => {
-        const scroll = document.getElementById("payslipScroll");
-        if (scroll) {
-          scroll.scrollLeft = 0;
-        }
-      }, 50);
-
-      // 🌟 IF SHEET COLUMN H IS 'SHOW', TRIGGER WHATSAPP POPUP AFTER 1.5 SECONDS
-      if (globalPopupStatus === "show") {
-        setTimeout(() => {
-          openWhatsappPopup();
-        }, 1500);
-      }
-    }
-
-    function openModal() {
-      document.getElementById('payslipModal').classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-      document.getElementById('payslipModal').classList.add('hidden');
-      document.body.style.overflow = '';
-    }
-
-    // 🌟 POPUP TRIGGER FUNCTIONS WITH FALLBACK BINDING
-    function openWhatsappPopup() {
-      if (globalPopupHeading) document.getElementById('popupHeading').innerText = globalPopupHeading;
-      if (globalPopupText) document.getElementById('popupText').innerText = globalPopupText;
-      if (globalPopupLink) document.getElementById('popupLink').href = globalPopupLink;
-      
-      document.getElementById('whatsappPopupModal').classList.remove('hidden');
-    }
-
-    function closeWhatsappPopup() {
-      document.getElementById('whatsappPopupModal').classList.add('hidden');
-    }
-
-    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
-      const element = document.getElementById('payslipBody');
-      const searchQuery = document.getElementById('searchQuery').value.replace(/[-\s]/g, "");
-      const district = document.getElementById('districtSelector').value;
-      const category = document.getElementById('categorySelector').value;
-      const month = document.getElementById('monthSelector').value;
-      const year = document.getElementById('yearSelector').value;
-      
-      showLoading("پی ڈی ایف تیار کی جا رہی ہے۔ براہ کرم انتظار کریں...");
-      
-      const opt = {
-        margin:       [12, 12, 12, 12],
-        filename:     `PaySlip-${district}-${category}-${month}-${year}-${searchQuery}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-      };
-      
-      html2pdf().from(element).set(opt).save().then(() => {
-        hideLoading();
-        showNotification("پے سلپ کامیابی سے ڈاؤن لوڈ کر دی گئی ہے!", "success");
-      }).catch(err => {
-        hideLoading();
-        showNotification("ڈاؤن لوڈنگ میں خلل آیا: " + err.toString(), "error");
-      });
-    });
-
-    function showNotification(text, type = 'info') {
-      const notification = document.createElement('div');
-      notification.className = `fixed bottom-5 left-5 right-5 sm:left-auto sm:max-w-md bg-white border-r-4 px-6 py-4 shadow-2xl rounded-2xl z-50 flex items-center justify-between transition-all-custom transform translate-y-20 opacity-0 urdu-text text-sm`;
-      
-      let borderClr = 'border-blue-500';
-      let icon = '<i class="fa-solid fa-circle-info text-blue-500 text-lg"></i>';
-      
-      if (type === 'success') borderClr = 'border-emerald-500', icon = '<i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>';
-      else if (type === 'error') borderClr = 'border-rose-500', icon = '<i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i>';
-      else if (type === 'warning') borderClr = 'border-amber-500', icon = '<i class="fa-solid fa-circle-exclamation text-amber-500 text-lg"></i>';
-      
-      notification.classList.add(borderClr);
-      notification.innerHTML = `<div class="flex items-center gap-3">${icon}<span class="text-slate-700 font-medium">${text}</span></div><button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600 transition-colors ml-2"><i class="fa-solid fa-xmark"></i></button>`;
-      
-      document.body.appendChild(notification);
-      setTimeout(() => notification.classList.remove('translate-y-20', 'opacity-0'), 50);
-      setTimeout(() => {
-        notification.classList.add('translate-y-20', 'opacity-0');
-        setTimeout(() => notification.remove(), 400);
-      }, 5000);
-    }
-  </script>
-  <script>
-    document.querySelectorAll('.faq-q').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var item = btn.closest('.faq-item');
-        var wasOpen = item.classList.contains('open');
-        document.querySelectorAll('.faq-item.open').forEach(function (i) { i.classList.remove('open'); });
-        if (!wasOpen) item.classList.add('open');
-      });
-    });
-  </script>
 </body>
 </html>
